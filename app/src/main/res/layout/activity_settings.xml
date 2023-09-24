@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:layout_marginBottom="24dp">
+        <ImageButton
+            android:id="@+id/settings_back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back_arrow"
+            android:background="@null"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/settings"
+            android:textSize="22sp"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/YPblack"/>
+    </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/SettingMenuTetL"
+            android:text="@string/dark_theme"/>
+        <Switch
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="6dp"
+            android:layout_marginVertical="18dp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/SettingMenuTetL"
+            android:text="@string/share_app"/>
+        <ImageButton
+            style="@style/SettingMenuButtonR"
+            android:src="@drawable/ic_share" />
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/SettingMenuTetL"
+            android:text="@string/write_support"/>
+        <ImageButton
+            style="@style/SettingMenuButtonR"
+            android:src="@drawable/ic_support" />
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/SettingMenuTetL"
+            android:text="@string/user_agreement"/>
+        <ImageButton
+            style="@style/SettingMenuButtonR"
+            android:src="@drawable/ic_arrow_forward" />
+    </FrameLayout>
+
+</LinearLayout>
