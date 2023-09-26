@@ -12,6 +12,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 
 class SearchActivity : AppCompatActivity() {
+
+    companion object {
+        private const val SEARCH_TEXT_KEY = "searchText"
+    }
+
+    private var searchText: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -35,7 +42,8 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchClearButton.visibility = clearButtonVisibility(s)
+               searchText = s.toString()
+               searchClearButton.visibility = clearButtonVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -47,15 +55,13 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val inputSearchText = findViewById<EditText>(R.id.input_search_text)
-        val searchText = inputSearchText.text.toString()
-        outState.putString("searchText", searchText)
+        outState.putString(SEARCH_TEXT_KEY, searchText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val inputSearchText = findViewById<EditText>(R.id.input_search_text)
-        val searchText = savedInstanceState.getString("searchText", "")
+        searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, "")
         inputSearchText.setText(searchText)
     }
 
@@ -68,8 +74,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard() {
-        val hideK = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        hideK.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 
 }
