@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginVertical="@dimen/size_8"
     android:layout_marginHorizontal="@dimen/size_12">
 
     <ImageView
@@ -38,6 +37,7 @@
                 style="@style/ArtistNameTime"
                 android:singleLine="true"
                 android:ellipsize="end"
+                android:maxEms="12"
                 tools:text="@string/tools_artist_name"/>
             <ImageView
                 android:layout_width="@dimen/size_14"

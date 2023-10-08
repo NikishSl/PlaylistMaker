@@ -12,7 +12,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.searchRecyclerPack.RecyclerSearch
+import com.practicum.playlistmaker.searchRecyclerPack.RecyclerSearchAdapter
 import com.practicum.playlistmaker.searchRecyclerPack.Track
 
 class SearchActivity : AppCompatActivity() {
@@ -22,9 +22,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private var searchText: String = ""
-    lateinit var recycler:RecyclerView
+    private lateinit var recycler:RecyclerView
 
-    var trackList = listOf(
+    private var trackList = listOf(
         Track(
             "Smells Like Teen Spirit",
             "Nirvana",
@@ -61,7 +61,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        recyclerFun()
+        initRecycler()
 
         val searchBackButton = findViewById<ImageButton>(R.id.search_back_button)
         val inputSearchText = findViewById<EditText>(R.id.input_search_text)
@@ -93,10 +93,10 @@ class SearchActivity : AppCompatActivity() {
         inputSearchText.addTextChangedListener(simpleTextWatcher)
     }
 
-    private fun recyclerFun() {
+    private fun initRecycler() {
         recycler = findViewById(R.id.search_recycler)
         recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = RecyclerSearch(this, trackList)
+        recycler.adapter = RecyclerSearchAdapter(this, trackList)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
