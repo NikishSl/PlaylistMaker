@@ -14,5 +14,7 @@
     <string name="share_app_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="choose_email_client">Выберите почтовый клиент</string>
     <string name="privacy_policy_url">https://yandex.ru/legal/practicum_offer</string>
-
+    <string name="tools_track_time">00:00</string>
+    <string name="tools_artist_name">Artist Name</string>
+    <string name="tools_track_name">Track Name</string>
 </resources>
