@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.dpToPx
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class RecyclerSearchAdapter(private val context: Context, private val tracks: List<Track>):
     RecyclerView.Adapter<RecyclerSearchAdapter.TrackHolder>() {
@@ -29,15 +31,15 @@ class RecyclerSearchAdapter(private val context: Context, private val tracks: Li
 
     class TrackHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        val trackName: TextView = itemView.findViewById(R.id.search_track_name)
-        val artistName: TextView = itemView.findViewById(R.id.search_artist_name)
-        val trackTime: TextView = itemView.findViewById(R.id.search_track_time)
-        val artworkUrl100: ImageView = itemView.findViewById(R.id.search_track_image)
+        private val trackName: TextView = itemView.findViewById(R.id.search_track_name)
+        private val artistName: TextView = itemView.findViewById(R.id.search_artist_name)
+        private val trackTime: TextView = itemView.findViewById(R.id.search_track_time)
+        private val artworkUrl100: ImageView = itemView.findViewById(R.id.search_track_image)
 
         fun bind(track: Track) {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackTime.text = track.trackTime
+            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .centerCrop()
@@ -45,5 +47,6 @@ class RecyclerSearchAdapter(private val context: Context, private val tracks: Li
                 .placeholder(R.drawable.ic_placeholder)
                 .into(artworkUrl100)
         }
+
     }
 }
