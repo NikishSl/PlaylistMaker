@@ -62,6 +62,35 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_16"
         />
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/search_history_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/search_history_tv"
+            style="@style/SearchPlaceholderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/you_find"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/size_42"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_weight="1"
+            android:id="@+id/history_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_20">
+        </androidx.recyclerview.widget.RecyclerView>
+        <Button
+            android:id="@+id/clear_history_button"
+            style="@style/SearchPlaceholderButton"
+            android:text="@string/clear_history"
+            android:layout_marginTop="@dimen/size_24"
+            android:textSize="@dimen/text_size_14"
+            android:padding="@dimen/size_8"/>
+    </LinearLayout>
     <FrameLayout
         android:visibility="gone"
         android:id="@+id/search_frame_nothing"
