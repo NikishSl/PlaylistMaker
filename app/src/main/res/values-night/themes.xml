@@ -10,5 +10,7 @@
         <item name="colorSecondary">@color/YPwhite</item>
         <item name="colorSecondaryVariant">@color/YPwhite</item>
         <item name="colorOnSecondary">@color/YPblack</item>
+        <item name="colorSwitchThumbNormal">@color/YPBlue</item>
+        <item name="colorAccent">@color/YPLightBlue</item>
     </style>
 </resources>

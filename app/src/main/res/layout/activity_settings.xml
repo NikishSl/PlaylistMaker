@@ -21,20 +21,23 @@
             style="@style/Title"
             android:text="@string/settings" />
     </LinearLayout>
-    <FrameLayout
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            style="@style/SettingMenuTetL"
-            android:text="@string/dark_theme"/>
-        <Switch
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/size_6"
-            android:layout_marginVertical="@dimen/size_18"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:fontFamily="@font/ys_display_regular"
+        android:paddingHorizontal="@dimen/size_16"
+        android:paddingVertical="@dimen/size_22"
+        android:text="@string/dark_theme"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:textFontWeight="400"
+        android:textSize="@dimen/text_size_16"
+        app:thumbTint="?attr/colorSwitchThumbNormal"
+        app:trackTint="?attr/colorAccent"
+        />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

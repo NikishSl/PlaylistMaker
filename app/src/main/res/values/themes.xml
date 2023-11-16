@@ -10,7 +10,8 @@
         <item name="colorSecondary">@color/YPGray</item>
         <item name="colorSecondaryVariant">@color/YPblack</item>
         <item name="colorOnSecondary">@color/YPGray</item>
+        <item name="colorSwitchThumbNormal">@color/YPGray</item>
+        <item name="colorAccent">@color/YPLightGray</item>
     </style>
-
     <!--<style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />-->
 </resources>

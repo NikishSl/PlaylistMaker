@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     companion object {
@@ -18,6 +19,14 @@ class SettingsActivity : AppCompatActivity() {
         val sharedButton = findViewById<ImageButton>(R.id.shared_button)
         val supportButton = findViewById<ImageButton>(R.id.support_button)
         val privacyButton = findViewById<ImageButton>(R.id.privacy_button)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
+
+        (applicationContext as App).applyTheme()
 
         privacyButton.setOnClickListener {
             privacyPolicy()
@@ -40,7 +49,6 @@ class SettingsActivity : AppCompatActivity() {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text))
-
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_app_chooser_title)))
     }
 
@@ -63,7 +71,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun privacyPolicy() {
         val url = getString(R.string.privacy_policy_url)
-
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
         try {
