@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.searchRecyclerPack
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.PlayerActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.SearchHistoryManager
 import com.practicum.playlistmaker.dpToPx
@@ -35,6 +37,7 @@ class RecyclerSearchAdapter(
 
         holder.itemView.setOnClickListener {
             searchHistoryManager?.addToSearchHistory(track)
+            navigateToAudioPlayer(track)
         }
     }
 
@@ -42,6 +45,20 @@ class RecyclerSearchAdapter(
     fun updateTracks(newTracks: MutableList<Track>) {
         tracks = newTracks
         notifyDataSetChanged()
+    }
+
+
+    private fun navigateToAudioPlayer(track: Track) {
+        val intent = Intent(context, PlayerActivity::class.java)
+        intent.putExtra("trackName", track.trackName)
+        intent.putExtra("artistName", track.artistName)
+        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
+        intent.putExtra("artworkUrl100", track.artworkUrl100)
+        intent.putExtra("collectionName", track.collectionName)
+        intent.putExtra("releaseDate", track.releaseDate)
+        intent.putExtra("primaryGenreName", track.primaryGenreName)
+        intent.putExtra("country", track.country)
+        context.startActivity(intent)
     }
 
     class TrackHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
