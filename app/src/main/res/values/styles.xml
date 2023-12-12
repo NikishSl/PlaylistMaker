@@ -93,4 +93,29 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+    <!--Player activity right parameters-->
+    <style name="PlayerRightParam">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">@dimen/size_16</item>
+        <item name="android:textColor">?attr/colorSecondaryVariant</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+    <!--Player activity left parameters-->
+    <style name="PlayerLeftParam">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/size_16</item>
+        <item name="android:textColor">@color/YPGray</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+    <!--Player activity another text-->
+    <style name="PlayerAnotherText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorSecondaryVariant</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
 </resources>
