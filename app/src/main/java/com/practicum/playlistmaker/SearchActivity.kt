@@ -3,6 +3,8 @@ package com.practicum.playlistmaker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -14,6 +16,7 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +34,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT_KEY = "searchText"
         private const val BASE_URL = "https://itunes.apple.com"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private var searchText: String = ""
@@ -40,7 +44,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var connectTrouble: FrameLayout
     private lateinit var search_history_ll: LinearLayout
 
+    private lateinit var progressBar: ProgressBar
+
     private lateinit var searchHistoryManager: SearchHistoryManager
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchTracks(searchText) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +57,8 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryManager = SearchHistoryManager(this)
         search_history_ll = findViewById(R.id.search_history_ll)
+
+        progressBar = findViewById(R.id.progressBar)
 
         initRecycler()
         initHistoryRecycler()
@@ -105,7 +116,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchText = s.toString()
                 searchClearButton.visibility = clearButtonVisibility(s)
-                searchTracks(searchText)
+                searchDebounce()
                 if (searchText.isEmpty()) {
                     search_history_ll.visibility = if (searchHistoryManager.getSearchHistory().isNotEmpty()) View.VISIBLE else View.GONE
                 } else {
@@ -117,6 +128,11 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         inputSearchText.addTextChangedListener(simpleTextWatcher)
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun initRecycler() {
@@ -159,10 +175,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(searchText: String) {
+        progressBar.visibility = View.VISIBLE
         if (searchText.isEmpty()) {
             recycler.visibility = View.GONE
             noResultsFrame.visibility = View.GONE
             connectTrouble.visibility = View.GONE
+            progressBar.visibility = View.GONE
             return
         }
 
@@ -176,6 +194,7 @@ class SearchActivity : AppCompatActivity() {
         call.enqueue(object : Callback<TrackResult> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<TrackResult>, response: Response<TrackResult>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val trackResult = response.body()
                     if (trackResult != null) {
@@ -202,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
                 noResultsFrame.visibility = View.GONE
                 connectTrouble.visibility = View.VISIBLE
                 search_history_ll.visibility = View.GONE
+                progressBar.visibility = View.GONE
             }
         })
     }

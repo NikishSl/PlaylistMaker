@@ -134,4 +134,13 @@
             android:textSize="@dimen/text_size_14"
             android:padding="@dimen/size_8"/>
     </FrameLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_marginTop="@dimen/size_140"
+        android:layout_width="@dimen/size_44"
+        android:layout_height="@dimen/size_44"
+        android:indeterminateTint="@color/YPBlue"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyle"/>
 </LinearLayout>

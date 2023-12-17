@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker
 
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +14,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
+
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var playerPlayTrack: ImageButton
+    private lateinit var playerTimePlnw: TextView
+    private lateinit var handler: Handler
+    private lateinit var updateSeekBar: Runnable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -30,9 +39,9 @@ class PlayerActivity : AppCompatActivity() {
         val primaryGenreName = intent.getStringExtra("primaryGenreName")
         val country = intent.getStringExtra("country")
         val artworkUrl100 = intent.getStringExtra("artworkUrl100")
+        val previewUrl = intent.getStringExtra("previewUrl")
 
         val playerAlbum = findViewById<TextView>(R.id.player_album)
-
         val playerTrackName = findViewById<TextView>(R.id.player_track_name)
         val playerArtistName = findViewById<TextView>(R.id.player_artist_name)
         val playerTrackTime = findViewById<TextView>(R.id.player_track_time_mills)
@@ -41,6 +50,30 @@ class PlayerActivity : AppCompatActivity() {
         val playerPrimaryGenre = findViewById<TextView>(R.id.player_primary_genre)
         val playerCountry = findViewById<TextView>(R.id.player_country_name)
         val playerArtworkImage = findViewById<ImageView>(R.id.player_image)
+
+        mediaPlayer = MediaPlayer()
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+
+        playerPlayTrack = findViewById<ImageButton>(R.id.player_play_track)
+        playerTimePlnw = findViewById<TextView>(R.id.player_time_plnw)
+        handler = Handler()
+
+        playerPlayTrack.setOnClickListener {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+            } else {
+                mediaPlayer.start()
+                updateSeekBar()
+            }
+            updatePlayPauseButton()
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            playerTimePlnw.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(0)
+            mediaPlayer.seekTo(0)
+            updatePlayPauseButton()
+        }
 
         playerTrackName.text = trackName
         playerArtistName.text = artistName
@@ -62,6 +95,42 @@ class PlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(dpToPx(this, 8f)))
             .placeholder(R.drawable.ic_placeholder_big)
             .into(playerArtworkImage)
+    }
+
+    private fun updatePlayPauseButton() {
+        val isPlaying = mediaPlayer.isPlaying
+        val iconResource = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_track
+        playerPlayTrack.setImageResource(iconResource)
+    }
+
+    private fun updateSeekBar() {
+        updateSeekBar = Runnable {
+            val currentTime = mediaPlayer.currentPosition
+            playerTimePlnw.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTime.toLong())
+            handler.postDelayed(updateSeekBar, 1000)
+        }
+        handler.postDelayed(updateSeekBar, 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mediaPlayer.isPlaying) {
+            updateSeekBar()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(updateSeekBar)
+        mediaPlayer.pause()
+        updatePlayPauseButton()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler.removeCallbacks(updateSeekBar)
     }
 }
 
