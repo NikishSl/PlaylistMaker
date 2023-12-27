@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.searchRecyclerPack
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +26,14 @@ class RecyclerSearchAdapter(
     private val searchHistoryManager: SearchHistoryManager?
 ) : RecyclerView.Adapter<RecyclerSearchAdapter.TrackHolder>() {
 
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {
         val itemView = LayoutInflater.from(context).inflate(R.layout.search_list_item, parent, false)
         return TrackHolder(itemView)
@@ -36,8 +46,10 @@ class RecyclerSearchAdapter(
         holder.bind(track)
 
         holder.itemView.setOnClickListener {
-            searchHistoryManager?.addToSearchHistory(track)
-            navigateToAudioPlayer(track)
+            if (clickDebounce()) {
+                searchHistoryManager?.addToSearchHistory(track)
+                navigateToAudioPlayer(track)
+            }
         }
     }
 
@@ -47,6 +59,14 @@ class RecyclerSearchAdapter(
         notifyDataSetChanged()
     }
 
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
 
     private fun navigateToAudioPlayer(track: Track) {
         val intent = Intent(context, PlayerActivity::class.java)
@@ -58,6 +78,7 @@ class RecyclerSearchAdapter(
         intent.putExtra("releaseDate", track.releaseDate)
         intent.putExtra("primaryGenreName", track.primaryGenreName)
         intent.putExtra("country", track.country)
+        intent.putExtra("previewUrl", track.previewUrl)
         context.startActivity(intent)
     }
 
