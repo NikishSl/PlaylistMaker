@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.searchRecyclerPack
+package com.practicum.playlistmaker.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,12 +13,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.PlayerActivity
+import com.practicum.playlistmaker.presentation.ui.player.PlayerActivity
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.SearchHistoryManager
+import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.dpToPx
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.practicum.playlistmaker.timeFormat
 
 class RecyclerSearchAdapter(
     private val context: Context,
@@ -35,7 +34,7 @@ class RecyclerSearchAdapter(
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {
-        val itemView = LayoutInflater.from(context).inflate(R.layout.search_list_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.search_list_item, parent, false)
         return TrackHolder(itemView)
     }
 
@@ -70,15 +69,7 @@ class RecyclerSearchAdapter(
 
     private fun navigateToAudioPlayer(track: Track) {
         val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra("trackName", track.trackName)
-        intent.putExtra("artistName", track.artistName)
-        intent.putExtra("trackTimeMillis", track.trackTimeMillis)
-        intent.putExtra("artworkUrl100", track.artworkUrl100)
-        intent.putExtra("collectionName", track.collectionName)
-        intent.putExtra("releaseDate", track.releaseDate)
-        intent.putExtra("primaryGenreName", track.primaryGenreName)
-        intent.putExtra("country", track.country)
-        intent.putExtra("previewUrl", track.previewUrl)
+        intent.putExtra("track", track)
         context.startActivity(intent)
     }
 
@@ -91,7 +82,7 @@ class RecyclerSearchAdapter(
         fun bind(track: Track) {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
+            trackTime.text = timeFormat.format(track.trackTimeMillis.toLong())
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .centerCrop()

@@ -1,10 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.searchRecyclerPack.RecyclerSearchAdapter
-import com.practicum.playlistmaker.searchRecyclerPack.Track
+import com.practicum.playlistmaker.domain.models.Track
 
 class SearchHistoryManager(private val context: Context) {
 

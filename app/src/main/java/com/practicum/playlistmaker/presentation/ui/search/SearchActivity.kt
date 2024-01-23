@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,9 +20,11 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.searchRecyclerPack.ITunesApiService
-import com.practicum.playlistmaker.searchRecyclerPack.RecyclerSearchAdapter
-import com.practicum.playlistmaker.searchRecyclerPack.TrackResult
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.SearchHistoryManager
+import com.practicum.playlistmaker.data.network.ITunesApiService
+import com.practicum.playlistmaker.presentation.RecyclerSearchAdapter
+import com.practicum.playlistmaker.presentation.TrackResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
