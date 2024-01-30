@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/colorPrimary"
-    tools:context=".presentation.ui.main.MainActivity">
+    tools:context=".main.presentation.MainActivity">
 
     <TextView
         android:fontFamily="@font/ys_display_medium"
