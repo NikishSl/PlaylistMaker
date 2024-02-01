@@ -12,11 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.domain.Track
+import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
+import com.practicum.playlistmaker.player.data.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.timeFormat
 
 class PlayerActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TRACK_KEY = "track"
+        private const val YEAR_START_INDEX = 0
+        private const val YEAR_END_INDEX = 4
+    }
 
     private lateinit var viewModel: PlayerViewModel
     private lateinit var playerPlayTrack: ImageButton
@@ -33,7 +40,9 @@ class PlayerActivity : AppCompatActivity() {
             finish()
         }
 
-        viewModel = ViewModelProvider(this).get(PlayerViewModel::class.java)
+        val audioPlayerInteractor = AudioPlayerInteractorImpl()
+        val viewModelFactory = PlayerViewModelFactory(audioPlayerInteractor)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayerViewModel::class.java)
 
         viewModel.track.observe(this) { track ->
             if (track != null) {
@@ -41,7 +50,7 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        val track = intent.getParcelableExtra<Track>("track")
+        val track = intent.getParcelableExtra<Track>(TRACK_KEY)
         track?.let { viewModel.setTrack(it) }
 
         playerPlayTrack = findViewById(R.id.player_play_track)
@@ -53,9 +62,9 @@ class PlayerActivity : AppCompatActivity() {
             updatePlayPauseButton()
         }
 
-        viewModel.getAudioPlayerInteractor().setOnCompletionListener {
+        viewModel.audioPlayerInteractor.setOnCompletionListener {
             playerTimePlnw.text = timeFormat.format(0)
-            viewModel.getAudioPlayerInteractor().seekTo(0)
+            viewModel.audioPlayerInteractor.seekTo(0)
             updatePlayPauseButton()
         }
 
@@ -84,7 +93,7 @@ class PlayerActivity : AppCompatActivity() {
             playerCollectionName.isVisible = false
         }
 
-        playerReleaseDate.text = track.releaseDate?.substring(0, 4)
+        playerReleaseDate.text = getYearFromDate(track.releaseDate)
         playerPrimaryGenre.text = track.primaryGenreName
         playerCountry.text = track.country
 
@@ -96,8 +105,12 @@ class PlayerActivity : AppCompatActivity() {
             .into(playerArtworkImage)
     }
 
+    private fun getYearFromDate(date: String?): String {
+        return date?.substring(YEAR_START_INDEX, YEAR_END_INDEX) ?: ""
+    }
+
     private fun updatePlayPauseButton() {
-        val isPlaying = viewModel.getAudioPlayerInteractor().isPlaying()
+        val isPlaying = viewModel.audioPlayerInteractor.isPlaying()
         val iconResource = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_track
         playerPlayTrack.setImageResource(iconResource)
     }
@@ -110,13 +123,13 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.stopTrackTimeUpdates()
-        viewModel.getAudioPlayerInteractor().pause()
+        viewModel.audioPlayerInteractor.pause()
         updatePlayPauseButton()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.getAudioPlayerInteractor().release()
+        viewModel.audioPlayerInteractor.release()
     }
 }
 

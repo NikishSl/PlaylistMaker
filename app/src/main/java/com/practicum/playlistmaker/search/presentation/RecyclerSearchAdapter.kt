@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.player.presentation.PlayerActivity
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.domain.Track
+import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
 import com.practicum.playlistmaker.search.data.SearchHistoryManager
 import com.practicum.playlistmaker.timeFormat

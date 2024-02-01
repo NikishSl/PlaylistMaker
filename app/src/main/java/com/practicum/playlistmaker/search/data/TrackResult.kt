@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.domain
+package com.practicum.playlistmaker.search.data
 
 data class TrackResult(
     val resultCount: Int,

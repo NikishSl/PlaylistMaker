@@ -1,18 +1,19 @@
 package com.practicum.playlistmaker.player.presentation
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
-import com.practicum.playlistmaker.player.domain.AudioPlayerInteractorImpl
-import com.practicum.playlistmaker.search.domain.Track
+import com.practicum.playlistmaker.search.data.Track
 
-class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+class PlayerViewModel(val audioPlayerInteractor: AudioPlayerInteractor) : ViewModel() {
 
-    private lateinit var audioPlayerInteractor: AudioPlayerInteractor
+    companion object {
+        private const val TRACK_TIME_UPDATE_DELAY_MILLIS = 1000L
+    }
+
     private val _track = MutableLiveData<Track>()
     val track: LiveData<Track>
         get() = _track
@@ -22,10 +23,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private var trackTimeUpdater: Runnable? = null
     private val handler = Handler(Looper.getMainLooper())
-
-    init {
-        audioPlayerInteractor = AudioPlayerInteractorImpl()
-    }
 
     fun setTrack(track: Track) {
         _track.value = track
@@ -44,7 +41,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         trackTimeUpdater = Runnable {
             val currentTime = audioPlayerInteractor.getCurrentPosition()
             _trackTime.postValue(currentTime)
-            handler.postDelayed(trackTimeUpdater!!, 1000)
+            handler.postDelayed(trackTimeUpdater!!, TRACK_TIME_UPDATE_DELAY_MILLIS)
         }
         handler.post(trackTimeUpdater!!)
     }
@@ -53,10 +50,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         trackTimeUpdater?.let {
             handler.removeCallbacks(it)
         }
-    }
-
-    fun getAudioPlayerInteractor(): AudioPlayerInteractor {
-        return audioPlayerInteractor
     }
 
     override fun onCleared() {
