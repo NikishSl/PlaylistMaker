@@ -1,7 +1,7 @@
-package com.practicum.playlistmaker.domain.impl
+package com.practicum.playlistmaker.player.data
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.domain.api.AudioPlayerInteractor
+import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 
 class AudioPlayerInteractorImpl : AudioPlayerInteractor {
     private lateinit var mediaPlayer: MediaPlayer

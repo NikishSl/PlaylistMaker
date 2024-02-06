@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.search.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,10 +13,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.presentation.ui.player.PlayerActivity
+import com.practicum.playlistmaker.player.presentation.PlayerActivity
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
+import com.practicum.playlistmaker.search.data.SearchHistoryManager
 import com.practicum.playlistmaker.timeFormat
 
 class RecyclerSearchAdapter(
