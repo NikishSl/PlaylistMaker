@@ -8,14 +8,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
-import com.practicum.playlistmaker.player.data.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.timeFormat
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -25,7 +24,7 @@ class PlayerActivity : AppCompatActivity() {
         private const val YEAR_END_INDEX = 4
     }
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by viewModel()
     private lateinit var playerPlayTrack: ImageButton
     private lateinit var playerTimePlnw: TextView
     private lateinit var handler: Handler
@@ -39,10 +38,6 @@ class PlayerActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
-
-        val audioPlayerInteractor = AudioPlayerInteractorImpl()
-        val viewModelFactory = PlayerViewModelFactory(audioPlayerInteractor)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayerViewModel::class.java)
 
         viewModel.track.observe(this) { track ->
             if (track != null) {

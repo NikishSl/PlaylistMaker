@@ -9,13 +9,8 @@ import com.practicum.playlistmaker.search.data.TrackResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class SearchViewModel : ViewModel() {
-    companion object {
-        private const val BASE_URL = "https://itunes.apple.com"
-    }
+class SearchViewModel(private val iTunesApiService: ITunesApiService) : ViewModel() {
 
     private val _tracks = MutableLiveData<List<Track>>()
     val tracks: LiveData<List<Track>> = _tracks
@@ -26,14 +21,7 @@ class SearchViewModel : ViewModel() {
     fun searchTracks(searchText: String) {
         _isLoading.value = true
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val iTunesApiService = retrofit.create(ITunesApiService::class.java)
-        val call = iTunesApiService.search(searchText)
-
-        call.enqueue(object : Callback<TrackResult> {
+        iTunesApiService.search(searchText).enqueue(object : Callback<TrackResult> {
             override fun onResponse(call: Call<TrackResult>, response: Response<TrackResult>) {
                 _isLoading.value = false
                 val trackResult = response.body()

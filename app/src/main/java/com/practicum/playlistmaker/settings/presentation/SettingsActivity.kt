@@ -3,22 +3,20 @@ package com.practicum.playlistmaker.settings.presentation
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.settings.data.App
 import com.practicum.playlistmaker.R
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         val app = applicationContext as App
-        viewModel = ViewModelProvider(this, ViewModelFactory(app.switchThemeUseCase)).get(
-            SettingsViewModel::class.java)
 
         val settingsBackButton = findViewById<ImageButton>(R.id.settings_back_button)
         val sharedButton = findViewById<ImageButton>(R.id.shared_button)

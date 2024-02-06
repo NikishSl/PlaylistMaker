@@ -17,12 +17,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.search.data.SearchHistoryManager
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -30,14 +31,14 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
     }
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private lateinit var recycler: RecyclerView
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var noResultsFrame: FrameLayout
     private lateinit var connectTrouble: FrameLayout
     private lateinit var searchHistoryLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var searchHistoryManager: SearchHistoryManager
+    private val searchHistoryManager: SearchHistoryManager by inject()
 
     private var searchText: String = ""
     private val handler = Handler(Looper.getMainLooper())
@@ -47,8 +48,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        searchHistoryManager = SearchHistoryManager(this)
         searchHistoryLayout = findViewById(R.id.search_history_ll)
         progressBar = findViewById(R.id.progressBar)
         noResultsFrame = findViewById(R.id.search_frame_nothing)
