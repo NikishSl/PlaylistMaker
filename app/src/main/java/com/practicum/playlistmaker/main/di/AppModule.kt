@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.main.di
 
+import android.media.MediaPlayer
 import com.practicum.playlistmaker.main.presentation.MainViewModel
 import com.practicum.playlistmaker.player.data.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
@@ -26,7 +27,8 @@ val appModule = module {
     single { SwitchThemeUseCase(get()) }
 
     viewModel { PlayerViewModel(get()) }
-    single<AudioPlayerInteractor> { AudioPlayerInteractorImpl() }
+    single<AudioPlayerInteractor> { AudioPlayerInteractorImpl { MediaPlayer() } }
+
 
     viewModel { SearchViewModel(get()) }
     factory { SearchHistoryManager(get()) }
@@ -45,3 +47,4 @@ fun provideRetrofit(): Retrofit {
 fun provideITunesApiService(retrofit: Retrofit): ITunesApiService {
     return retrofit.create(ITunesApiService::class.java)
 }
+
