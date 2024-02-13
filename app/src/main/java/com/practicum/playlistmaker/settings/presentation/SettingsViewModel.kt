@@ -11,10 +11,6 @@ import com.practicum.playlistmaker.settings.domain.SwitchThemeUseCase
 
 class SettingsViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : ViewModel() {
 
-    companion object {
-        private const val EXAMPLE_EMAIL = "email@example.com"
-    }
-
     private val _darkTheme = MutableLiveData<Boolean>()
     val darkTheme: LiveData<Boolean> = _darkTheme
 
@@ -38,12 +34,13 @@ class SettingsViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : Vi
     }
 
     fun navigateToSupport(activity: AppCompatActivity) {
-        val email = EXAMPLE_EMAIL
+        val email = arrayOf(activity.getString(R.string.support_mail))
         val subject = activity.getString(R.string.share_app_subject)
         val message = activity.getString(R.string.share_app_message)
 
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:$email")
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, email)
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
         intent.putExtra(Intent.EXTRA_TEXT, message)
 
