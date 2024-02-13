@@ -30,4 +30,8 @@
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
     <string name="support_mail">email@example.com</string>
+    <string name="mediateka">Медиатека</string>
+    <string name="empty_media">Ваша медиатека пуста</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="create_no_playlist">Вы не создали \n ни одного плейлиста</string>
 </resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorOnPrimary"
+    tools:context=".media.presentation.FavoritesFragment">
+
+    <ImageView
+        android:layout_width="@dimen/size_120"
+        android:layout_height="@dimen/size_120"
+        android:layout_marginTop="@dimen/size_106"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_nothing"
+        />
+    <TextView
+        android:text="@string/empty_media"
+        android:layout_marginTop="@dimen/size_242"
+        style="@style/SearchPlaceholderText"/>
+</FrameLayout>

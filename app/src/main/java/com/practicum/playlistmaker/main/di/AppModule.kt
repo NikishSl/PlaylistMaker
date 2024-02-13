@@ -2,6 +2,9 @@ package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.main.presentation.MainViewModel
+import com.practicum.playlistmaker.media.presentation.FavoritesViewModel
+import com.practicum.playlistmaker.media.presentation.MediaViewModel
+import com.practicum.playlistmaker.media.presentation.PlaylistViewModel
 import com.practicum.playlistmaker.player.data.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
@@ -34,6 +37,10 @@ val appModule = module {
     factory { SearchHistoryManager(get()) }
     single { provideRetrofit() }
     single { provideITunesApiService(get()) }
+
+    viewModel { MediaViewModel() }
+    viewModel { PlaylistViewModel() }
+    viewModel { FavoritesViewModel() }
 }
 
 private const val BASE_URL = "https://itunes.apple.com"

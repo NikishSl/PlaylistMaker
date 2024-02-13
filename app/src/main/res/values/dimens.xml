@@ -24,10 +24,12 @@
     <dimen name="size_54">54dp</dimen>
     <dimen name="size_100">100dp</dimen>
     <dimen name="size_102">102dp</dimen>
+    <dimen name="size_106">106dp</dimen>
     <dimen name="size_120">120dp</dimen>
     <dimen name="size_140">140dp</dimen>
     <dimen name="size_234">234dp</dimen>
     <dimen name="size_238">238dp</dimen>
+    <dimen name="size_242">242dp</dimen>
     <dimen name="size_282">282dp</dimen>
     <dimen name="size_346">346dp</dimen>
 
