@@ -12,6 +12,12 @@ class FavoritesFragment : Fragment() {
 
     private val viewModel: FavoritesViewModel by viewModel()
 
+    companion object {
+        fun newInstance(): FavoritesFragment {
+            return FavoritesFragment()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

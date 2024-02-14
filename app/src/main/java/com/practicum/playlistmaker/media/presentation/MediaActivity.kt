@@ -25,8 +25,7 @@ class MediaActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         tabLayout = findViewById(R.id.tabLayout)
 
-        val fragmentList = listOf(FavoritesFragment(), PlaylistFragment())
-        val adapter = MediaPagerAdapter(fragmentList, supportFragmentManager, lifecycle)
+        val adapter = MediaPagerAdapter(supportFragmentManager, lifecycle)
         viewPager.adapter = adapter
 
         viewModel.tabTitles.observe(this, Observer { titles ->
