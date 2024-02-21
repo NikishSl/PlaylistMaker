@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".media.presentation.MediaActivity">
+    android:background="?attr/colorOnPrimary"
+    tools:context=".media.presentation.MediaFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/size_4">
-        <ImageButton
-            style="@style/BackArrowButton"
-            android:id="@+id/media_back_button" />
-        <TextView
-            style="@style/Title"
-            android:text="@string/mediateka" />
-    </LinearLayout>
+    <TextView
+        style="@style/TitleNew"
+        android:text="@string/mediateka" />
 
     <com.google.android.material.tabs.TabLayout
         style="@style/CustomTabLayoutText"
