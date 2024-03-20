@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.settings.domain.SwitchThemeUseCase
 
@@ -23,7 +22,7 @@ class SettingsViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : Vi
         _darkTheme.value = isDarkTheme
     }
 
-    fun navigateToPrivacyPolicy(activity: AppCompatActivity) {
+    fun navigateToPrivacyPolicy(activity: SettingsFragment) {
         val url = activity.getString(R.string.privacy_policy_url)
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
@@ -33,7 +32,7 @@ class SettingsViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : Vi
         }
     }
 
-    fun navigateToSupport(activity: AppCompatActivity) {
+    fun navigateToSupport(activity: SettingsFragment) {
         val email = arrayOf(activity.getString(R.string.support_mail))
         val subject = activity.getString(R.string.share_app_subject)
         val message = activity.getString(R.string.share_app_message)
@@ -50,7 +49,7 @@ class SettingsViewModel(private val switchThemeUseCase: SwitchThemeUseCase) : Vi
         }
     }
 
-    fun shareApp(activity: AppCompatActivity) {
+    fun shareApp(activity: SettingsFragment) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_text))

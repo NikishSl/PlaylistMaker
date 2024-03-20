@@ -3,6 +3,9 @@ package com.practicum.playlistmaker.main.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.practicum.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -13,20 +16,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val searchButton = findViewById<Button>(R.id.search_button)
-        val mediaButton = findViewById<Button>(R.id.media_button)
-        val settingsButton = findViewById<Button>(R.id.settings_button)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        searchButton.setOnClickListener {
-            viewModel.onSearchButtonClicked(this)
-        }
-
-        mediaButton.setOnClickListener {
-            viewModel.onMediaButtonClicked(this)
-        }
-
-        settingsButton.setOnClickListener {
-            viewModel.onSettingsButtonClicked(this)
-        }
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.setupWithNavController(navController)
     }
 }

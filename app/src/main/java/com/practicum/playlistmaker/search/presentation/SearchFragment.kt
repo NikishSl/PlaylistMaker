@@ -6,17 +6,18 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -25,7 +26,7 @@ import com.practicum.playlistmaker.search.data.SearchHistoryManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
@@ -44,27 +45,35 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { viewModel.searchTracks(searchText) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
-
-        searchHistoryLayout = findViewById(R.id.search_history_ll)
-        progressBar = findViewById(R.id.progressBar)
-        noResultsFrame = findViewById(R.id.search_frame_nothing)
-        connectTrouble = findViewById(R.id.connect_trouble)
-
-        initRecycler()
-        initHistoryRecycler()
-        setupUI()
-        setupObservers()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
-    private fun setupUI() {
-        val searchBackButton = findViewById<ImageButton>(R.id.search_back_button)
-        val inputSearchText = findViewById<EditText>(R.id.input_search_text)
-        val searchClearButton = findViewById<ImageView>(R.id.clear_icon)
-        val updateButton = findViewById<Button>(R.id.search_update_bt)
-        val clearHistoryButton = findViewById<Button>(R.id.clear_history_button)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        searchHistoryLayout = view.findViewById(R.id.search_history_ll)
+        progressBar = view.findViewById(R.id.progressBar)
+        noResultsFrame = view.findViewById(R.id.search_frame_nothing)
+        connectTrouble = view.findViewById(R.id.connect_trouble)
+
+        initRecycler(view)
+        initHistoryRecycler(view)
+        setupUI(view)
+        setupObservers()
+
+        updateHistoryVisibility(searchText.isEmpty())
+    }
+
+    private fun setupUI(view: View) {
+        val inputSearchText = view.findViewById<EditText>(R.id.input_search_text)
+        val searchClearButton = view.findViewById<ImageView>(R.id.clear_icon)
+        val updateButton = view.findViewById<Button>(R.id.search_update_bt)
+        val clearHistoryButton = view.findViewById<Button>(R.id.clear_history_button)
 
         inputSearchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -110,14 +119,10 @@ class SearchActivity : AppCompatActivity() {
         updateButton.setOnClickListener {
             viewModel.searchTracks(searchText)
         }
-
-        searchBackButton.setOnClickListener {
-            finish()
-        }
     }
 
     private fun setupObservers() {
-        viewModel.tracks.observe(this) { tracks ->
+        viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             if (tracks.isNotEmpty()) {
                 updateSearchResults(tracks)
                 noResultsFrame.visibility = View.GONE
@@ -128,28 +133,28 @@ class SearchActivity : AppCompatActivity() {
             connectTrouble.visibility = View.GONE
         }
 
-        viewModel.isLoading.observe(this) { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 
-    private fun initRecycler() {
-        recycler = findViewById(R.id.search_recycler)
-        recycler.layoutManager = LinearLayoutManager(this)
+    private fun initRecycler(view: View) {
+        recycler = view.findViewById(R.id.search_recycler)
+        recycler.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun initHistoryRecycler() {
-        historyRecyclerView = findViewById(R.id.history_recycler_view)
-        historyRecyclerView.layoutManager = LinearLayoutManager(this)
+    private fun initHistoryRecycler(view: View) {
+        historyRecyclerView = view.findViewById(R.id.history_recycler_view)
+        historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         val searchHistory = searchHistoryManager.getSearchHistory().toMutableList()
-        val historyAdapter = RecyclerSearchAdapter(this, searchHistory, searchHistoryManager)
+        val historyAdapter = RecyclerSearchAdapter(requireContext(), searchHistory, searchHistoryManager)
         historyRecyclerView.adapter = historyAdapter
         searchHistoryManager.historyAdapter = historyAdapter
     }
 
     private fun hideKeyboard() {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        currentFocus?.let {
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        requireActivity().currentFocus?.let {
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
         }
     }
@@ -167,7 +172,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateSearchResults(tracks: List<Track>) {
-        val adapter = RecyclerSearchAdapter(this, tracks.toMutableList(), searchHistoryManager)
+        val adapter = RecyclerSearchAdapter(requireContext(), tracks.toMutableList(), searchHistoryManager)
         recycler.adapter = adapter
         recycler.visibility = View.VISIBLE
     }
