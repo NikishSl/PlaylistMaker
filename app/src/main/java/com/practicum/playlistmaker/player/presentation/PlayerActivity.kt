@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.player.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,7 +25,6 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel()
     private lateinit var playerPlayTrack: ImageButton
     private lateinit var playerTimePlnw: TextView
-    private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +47,6 @@ class PlayerActivity : AppCompatActivity() {
 
         playerPlayTrack = findViewById(R.id.player_play_track)
         playerTimePlnw = findViewById(R.id.player_time_plnw)
-        handler = Handler(Looper.getMainLooper())
 
         playerPlayTrack.setOnClickListener {
             viewModel.playOrPause()
