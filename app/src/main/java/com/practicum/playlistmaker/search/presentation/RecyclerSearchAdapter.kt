@@ -3,8 +3,6 @@ package com.practicum.playlistmaker.search.presentation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +17,20 @@ import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
 import com.practicum.playlistmaker.search.data.SearchHistoryManager
 import com.practicum.playlistmaker.timeFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class RecyclerSearchAdapter(
     private val context: Context,
     private var tracks: MutableList<Track>,
-    private val searchHistoryManager: SearchHistoryManager?
-) : RecyclerView.Adapter<RecyclerSearchAdapter.TrackHolder>() {
+    private val searchHistoryManager: SearchHistoryManager?,
+    private val coroutineScope: CoroutineScope
+) : RecyclerView.Adapter<RecyclerSearchAdapter.TrackHolder>(), CoroutineScope {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -32,7 +38,13 @@ class RecyclerSearchAdapter(
 
     private var isClickAllowed = true
 
-    private val handler = Handler(Looper.getMainLooper())
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        coroutineContext.cancel()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.search_list_item, parent, false)
@@ -63,7 +75,10 @@ class RecyclerSearchAdapter(
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
