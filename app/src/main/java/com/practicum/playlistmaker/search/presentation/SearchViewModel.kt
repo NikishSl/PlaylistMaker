@@ -2,14 +2,14 @@ package com.practicum.playlistmaker.search.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.search.data.ITunesApiService
+import com.practicum.playlistmaker.search.data.ITunesRepository
 import com.practicum.playlistmaker.search.data.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val iTunesApiService: ITunesApiService) : ViewModel() {
+class SearchViewModel(private val iTunesRepository: ITunesRepository) : ViewModel() {
 
     private val _tracks = MutableStateFlow<List<Track>>(emptyList())
     val tracks: Flow<List<Track>> = _tracks.asStateFlow()
@@ -21,8 +21,9 @@ class SearchViewModel(private val iTunesApiService: ITunesApiService) : ViewMode
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val tracks = iTunesApiService.search(searchText).results
-                _tracks.value = tracks
+                iTunesRepository.searchTracks(searchText).collect { tracks ->
+                    _tracks.value = tracks
+                }
             } catch (e: Exception) {
                 _tracks.value = emptyList()
             } finally {
