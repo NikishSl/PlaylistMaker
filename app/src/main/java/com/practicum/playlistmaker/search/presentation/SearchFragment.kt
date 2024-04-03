@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.search.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -18,11 +16,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.search.data.SearchHistoryManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -42,8 +44,6 @@ class SearchFragment : Fragment() {
     private val searchHistoryManager: SearchHistoryManager by inject()
 
     private var searchText: String = ""
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { viewModel.searchTracks(searchText) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,15 +61,17 @@ class SearchFragment : Fragment() {
         noResultsFrame = view.findViewById(R.id.search_frame_nothing)
         connectTrouble = view.findViewById(R.id.connect_trouble)
 
+        val coroutineScope = viewLifecycleOwner.lifecycleScope
+
         initRecycler(view)
         initHistoryRecycler(view)
-        setupUI(view)
+        setupUI(view, coroutineScope)
         setupObservers()
 
         updateHistoryVisibility(searchText.isEmpty())
     }
 
-    private fun setupUI(view: View) {
+    private fun setupUI(view: View, coroutineScope: CoroutineScope) {
         val inputSearchText = view.findViewById<EditText>(R.id.input_search_text)
         val searchClearButton = view.findViewById<ImageView>(R.id.clear_icon)
         val updateButton = view.findViewById<Button>(R.id.search_update_bt)
@@ -91,7 +93,10 @@ class SearchFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchText = s.toString()
                 searchClearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                searchDebounce()
+                coroutineScope.launch {
+                    delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+                    viewModel.searchTracks(searchText)
+                }
                 updateHistoryVisibility(searchText.isEmpty())
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -122,19 +127,23 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
-            if (tracks.isNotEmpty()) {
-                updateSearchResults(tracks)
-                noResultsFrame.visibility = View.GONE
-            } else {
-                recycler.visibility = View.GONE
-                noResultsFrame.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.tracks.collect { tracks ->
+                if (tracks.isNotEmpty()) {
+                    updateSearchResults(tracks)
+                    noResultsFrame.visibility = View.GONE
+                } else {
+                    recycler.visibility = View.GONE
+                    noResultsFrame.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
+                }
+                connectTrouble.visibility = View.GONE
             }
-            connectTrouble.visibility = View.GONE
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading.collect { isLoading ->
+                progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
         }
     }
 
@@ -147,7 +156,7 @@ class SearchFragment : Fragment() {
         historyRecyclerView = view.findViewById(R.id.history_recycler_view)
         historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         val searchHistory = searchHistoryManager.getSearchHistory().toMutableList()
-        val historyAdapter = RecyclerSearchAdapter(requireContext(), searchHistory, searchHistoryManager)
+        val historyAdapter = RecyclerSearchAdapter(requireContext(), searchHistory, searchHistoryManager, lifecycleScope)
         historyRecyclerView.adapter = historyAdapter
         searchHistoryManager.historyAdapter = historyAdapter
     }
@@ -159,11 +168,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
-    }
-
     private fun updateHistoryVisibility(isEmptySearchText: Boolean) {
         searchHistoryLayout.visibility = if (isEmptySearchText && searchHistoryManager.getSearchHistory().isNotEmpty())
             View.VISIBLE
@@ -172,7 +176,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun updateSearchResults(tracks: List<Track>) {
-        val adapter = RecyclerSearchAdapter(requireContext(), tracks.toMutableList(), searchHistoryManager)
+        val adapter = RecyclerSearchAdapter(requireContext(), tracks.toMutableList(), searchHistoryManager, lifecycleScope)
         recycler.adapter = adapter
         recycler.visibility = View.VISIBLE
     }

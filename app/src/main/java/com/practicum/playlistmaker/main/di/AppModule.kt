@@ -9,7 +9,9 @@ import com.practicum.playlistmaker.player.data.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.data.ITunesApiService
+import com.practicum.playlistmaker.search.data.ITunesRepository
 import com.practicum.playlistmaker.search.data.SearchHistoryManager
+import com.practicum.playlistmaker.search.domain.ITunesRepositoryImpl
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.settings.data.App
 import com.practicum.playlistmaker.settings.data.SettingsRepository
@@ -37,6 +39,7 @@ val appModule = module {
     factory { SearchHistoryManager(get()) }
     single { provideRetrofit() }
     single { provideITunesApiService(get()) }
+    single<ITunesRepository> { ITunesRepositoryImpl(get()) }
 
     viewModel { MediaViewModel() }
     viewModel { PlaylistViewModel() }

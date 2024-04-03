@@ -1,12 +1,14 @@
 package com.practicum.playlistmaker.player.presentation
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.search.data.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(val audioPlayerInteractor: AudioPlayerInteractor) : ViewModel() {
 
@@ -21,8 +23,7 @@ class PlayerViewModel(val audioPlayerInteractor: AudioPlayerInteractor) : ViewMo
     val trackTime: LiveData<Int>
         get() = _trackTime
 
-    private var trackTimeUpdater: Runnable? = null
-    private val handler = Handler(Looper.getMainLooper())
+    private var trackTimeJob: Job? = null
 
     fun setTrack(track: Track) {
         _track.value = track
@@ -38,22 +39,22 @@ class PlayerViewModel(val audioPlayerInteractor: AudioPlayerInteractor) : ViewMo
     }
 
     fun startTrackTimeUpdates() {
-        trackTimeUpdater = Runnable {
-            val currentTime = audioPlayerInteractor.getCurrentPosition()
-            _trackTime.postValue(currentTime)
-            handler.postDelayed(trackTimeUpdater!!, TRACK_TIME_UPDATE_DELAY_MILLIS)
+        trackTimeJob = viewModelScope.launch {
+            while (true) {
+                val currentTime = audioPlayerInteractor.getCurrentPosition()
+                _trackTime.postValue(currentTime)
+                delay(TRACK_TIME_UPDATE_DELAY_MILLIS)
+            }
         }
-        handler.post(trackTimeUpdater!!)
     }
 
     fun stopTrackTimeUpdates() {
-        trackTimeUpdater?.let {
-            handler.removeCallbacks(it)
-        }
+        trackTimeJob?.cancel()
     }
 
     override fun onCleared() {
         super.onCleared()
         audioPlayerInteractor.release()
+        trackTimeJob?.cancel()
     }
 }
