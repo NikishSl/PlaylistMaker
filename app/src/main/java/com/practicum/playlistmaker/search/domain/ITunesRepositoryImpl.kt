@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ITunesRepositoryImpl(private val iTunesApiService: ITunesApiService) : ITunesRepository {
-    override suspend fun searchTracks(searchText: String): Flow<List<Track>> {
-        val result = iTunesApiService.search(searchText)
+    override fun searchTracks(searchText: String): Flow<List<Track>> {
         return flow {
+            val result = iTunesApiService.search(searchText)
             emit(result.results)
         }
     }
