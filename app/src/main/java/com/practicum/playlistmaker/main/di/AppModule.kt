@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
+import com.practicum.playlistmaker.TrackConverter
 import com.practicum.playlistmaker.main.presentation.MainViewModel
 import com.practicum.playlistmaker.media.presentation.FavoritesViewModel
 import com.practicum.playlistmaker.media.presentation.MediaViewModel
@@ -44,6 +45,8 @@ val appModule = module {
     viewModel { MediaViewModel() }
     viewModel { PlaylistViewModel() }
     viewModel { FavoritesViewModel() }
+
+    factory { TrackConverter() }
 }
 
 private const val BASE_URL = "https://itunes.apple.com"
