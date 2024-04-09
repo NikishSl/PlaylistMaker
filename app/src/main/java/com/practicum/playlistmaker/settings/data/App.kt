@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.main.di.appModule
+import com.practicum.playlistmaker.main.di.dataModule
 import com.practicum.playlistmaker.settings.domain.SwitchThemeUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -25,6 +26,7 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             modules(appModule)
+            modules(dataModule)
         }
 
         val settingsRepository = SettingsRepository(getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE))
