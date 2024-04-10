@@ -14,5 +14,6 @@ data class FavoriteTrackEntity(
     val primaryGenreName: String,
     val country: String,
     val trackTimeMillis: Int,
-    val previewUrl: String
+    val previewUrl: String,
+    val addTimeStamp: Int = 0
 )

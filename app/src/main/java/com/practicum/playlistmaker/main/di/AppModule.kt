@@ -1,6 +1,10 @@
 package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
+import com.practicum.playlistmaker.FavoritesInteractor
+import com.practicum.playlistmaker.FavoritesInteractorImpl
+import com.practicum.playlistmaker.FavoritesRepository
+import com.practicum.playlistmaker.FavoritesRepositoryImpl
 import com.practicum.playlistmaker.TrackConverter
 import com.practicum.playlistmaker.main.presentation.MainViewModel
 import com.practicum.playlistmaker.media.presentation.FavoritesViewModel
@@ -47,7 +51,11 @@ val appModule = module {
     viewModel { FavoritesViewModel() }
 
     factory { TrackConverter() }
+
+    single<FavoritesRepository> {FavoritesRepositoryImpl(get(), get())}
+    single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
 }
+
 
 private const val BASE_URL = "https://itunes.apple.com"
 fun provideRetrofit(): Retrofit {
