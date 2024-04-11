@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.db
 
 import com.practicum.playlistmaker.db.FavoriteTrackEntity
 import com.practicum.playlistmaker.search.data.Track

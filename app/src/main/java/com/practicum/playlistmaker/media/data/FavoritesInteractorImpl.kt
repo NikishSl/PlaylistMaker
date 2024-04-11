@@ -1,5 +1,6 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.media.data
 
+import com.practicum.playlistmaker.media.domain.FavoritesInteractor
 import com.practicum.playlistmaker.search.data.Track
 import kotlinx.coroutines.flow.Flow
 

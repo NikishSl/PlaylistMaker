@@ -5,16 +5,28 @@
     android:layout_height="match_parent"
     android:background="?attr/colorOnPrimary"
     tools:context=".media.presentation.FavoritesFragment">
-
-    <ImageView
-        android:layout_width="@dimen/size_120"
-        android:layout_height="@dimen/size_120"
-        android:layout_marginTop="@dimen/size_106"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_nothing"
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/favorites_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_16"
         />
-    <TextView
-        android:text="@string/empty_media"
-        android:layout_marginTop="@dimen/size_242"
-        style="@style/SearchPlaceholderText"/>
+    <FrameLayout
+        android:id="@+id/favorites_placeholder"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="@dimen/size_120"
+            android:layout_height="@dimen/size_120"
+            android:layout_marginTop="@dimen/size_106"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_nothing"
+            />
+        <TextView
+            android:text="@string/empty_media"
+            android:layout_marginTop="@dimen/size_242"
+            style="@style/SearchPlaceholderText"/>
+    </FrameLayout>
 </FrameLayout>

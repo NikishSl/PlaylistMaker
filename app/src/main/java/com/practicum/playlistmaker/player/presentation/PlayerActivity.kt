@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -25,6 +26,7 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel()
     private lateinit var playerPlayTrack: ImageButton
     private lateinit var playerTimePlnw: TextView
+    private lateinit var likeButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +49,15 @@ class PlayerActivity : AppCompatActivity() {
 
         playerPlayTrack = findViewById(R.id.player_play_track)
         playerTimePlnw = findViewById(R.id.player_time_plnw)
+        likeButton = findViewById(R.id.player_like_track)
 
         playerPlayTrack.setOnClickListener {
             viewModel.playOrPause()
             updatePlayPauseButton()
+        }
+
+        likeButton.setOnClickListener {
+            viewModel.onFavoriteClicked()
         }
 
         viewModel.audioPlayerInteractor.setOnCompletionListener {
@@ -62,6 +69,11 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.trackTime.observe(this) { currentTime ->
             playerTimePlnw.text = timeFormat.format(currentTime.toLong())
         }
+
+        viewModel.isFavorite.observe(this, Observer { isFavorite ->
+            val iconResource = if (isFavorite) R.drawable.ic_like else R.drawable.ic_like_track
+            likeButton.setImageResource(iconResource)
+        })
     }
 
     private fun bindTrack(track: Track) {

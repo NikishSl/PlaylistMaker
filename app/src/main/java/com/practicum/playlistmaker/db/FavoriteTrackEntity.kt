@@ -15,5 +15,5 @@ data class FavoriteTrackEntity(
     val country: String,
     val trackTimeMillis: Int,
     val previewUrl: String,
-    val addTimeStamp: Int = 0
+    val addTimeStamp: Long = 0
 )

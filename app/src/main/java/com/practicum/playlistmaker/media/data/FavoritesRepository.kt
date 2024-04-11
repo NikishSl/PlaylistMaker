@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.media.data
 
 import com.practicum.playlistmaker.search.data.Track
 import kotlinx.coroutines.flow.Flow
 
-interface FavoritesInteractor {
+interface FavoritesRepository {
     suspend fun addTrackToFavorites(track: Track)
     suspend fun removeTrackFromFavorites(track: Track)
     fun getAllFavoriteTracks(): Flow<List<Track>>

@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.search.data.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val iTunesRepository: ITunesRepository) : ViewModel() {
@@ -21,9 +22,28 @@ class SearchViewModel(private val iTunesRepository: ITunesRepository) : ViewMode
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                iTunesRepository.searchTracks(searchText).collect { tracks ->
-                    _tracks.value = tracks
-                }
+                iTunesRepository.searchTracks(searchText)
+                    .map { tracks -> iTunesRepository.checkFavorites(tracks) }
+                    .collect { tracks ->
+                        _tracks.value = tracks
+                    }
+            } catch (e: Exception) {
+                _tracks.value = emptyList()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getSearchHistoryTracks() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                iTunesRepository.getSearchHistoryTracks()
+                    .map { tracks -> iTunesRepository.checkFavorites(tracks) }
+                    .collect { tracks ->
+                        _tracks.value = tracks
+                    }
             } catch (e: Exception) {
                 _tracks.value = emptyList()
             } finally {
