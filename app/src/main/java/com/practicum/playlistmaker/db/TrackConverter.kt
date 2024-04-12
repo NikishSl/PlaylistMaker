@@ -15,7 +15,7 @@ class TrackConverter {
             releaseDate = trackEntity.releaseDate,
             primaryGenreName = trackEntity.primaryGenreName,
             country = trackEntity.country,
-            previewUrl = trackEntity.previewUrl,
+            previewUrl = trackEntity.previewUrl
         )
     }
 
