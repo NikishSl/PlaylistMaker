@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.db
 
-import com.practicum.playlistmaker.db.FavoriteTrackEntity
 import com.practicum.playlistmaker.search.data.Track
 
 class TrackConverter {
@@ -16,7 +15,7 @@ class TrackConverter {
             releaseDate = trackEntity.releaseDate,
             primaryGenreName = trackEntity.primaryGenreName,
             country = trackEntity.country,
-            previewUrl = trackEntity.previewUrl
+            previewUrl = trackEntity.previewUrl,
         )
     }
 
@@ -31,7 +30,8 @@ class TrackConverter {
             primaryGenreName = track.primaryGenreName,
             country = track.country,
             trackTimeMillis = track.trackTimeMillis,
-            previewUrl = track.previewUrl
+            previewUrl = track.previewUrl,
+            addTimeStamp = System.currentTimeMillis()
         )
     }
 }
