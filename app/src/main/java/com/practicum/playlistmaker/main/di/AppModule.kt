@@ -1,6 +1,11 @@
 package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
+import com.practicum.playlistmaker.media.domain.FavoritesInteractor
+import com.practicum.playlistmaker.media.data.FavoritesInteractorImpl
+import com.practicum.playlistmaker.media.data.FavoritesRepository
+import com.practicum.playlistmaker.media.domain.FavoritesRepositoryImpl
+import com.practicum.playlistmaker.db.TrackConverter
 import com.practicum.playlistmaker.main.presentation.MainViewModel
 import com.practicum.playlistmaker.media.presentation.FavoritesViewModel
 import com.practicum.playlistmaker.media.presentation.MediaViewModel
@@ -31,7 +36,7 @@ val appModule = module {
     single { SettingsRepository(androidApplication().getSharedPreferences("ThemePrefs", android.content.Context.MODE_PRIVATE)) }
     single { SwitchThemeUseCase(get()) }
 
-    viewModel { PlayerViewModel(get()) }
+    viewModel { PlayerViewModel(get(),get()) }
     single<AudioPlayerInteractor> { AudioPlayerInteractorImpl { MediaPlayer() } }
 
 
@@ -39,12 +44,18 @@ val appModule = module {
     factory { SearchHistoryManager(get()) }
     single { provideRetrofit() }
     single { provideITunesApiService(get()) }
-    single<ITunesRepository> { ITunesRepositoryImpl(get()) }
+    single<ITunesRepository> { ITunesRepositoryImpl(get(),get(),get()) }
 
     viewModel { MediaViewModel() }
     viewModel { PlaylistViewModel() }
-    viewModel { FavoritesViewModel() }
+    viewModel { FavoritesViewModel(get()) }
+
+    factory { TrackConverter() }
+
+    single<FavoritesRepository> { FavoritesRepositoryImpl(get(), get()) }
+    single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
 }
+
 
 private const val BASE_URL = "https://itunes.apple.com"
 fun provideRetrofit(): Retrofit {
