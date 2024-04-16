@@ -10,8 +10,10 @@ val dataModule = module {
         Room.databaseBuilder(
             androidApplication(),
             AppDatabase::class.java, "app-database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     single { get<AppDatabase>().favoriteTrackDao() }
+    single { get<AppDatabase>().playlistDao() }
 }

@@ -22,4 +22,10 @@
         android:name="com.practicum.playlistmaker.settings.presentation.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings"/>
+
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.practicum.playlistmaker.CreatePlaylistFragment"
+        android:label="CreatePlaylistFragment"
+        tools:layout="@layout/fragment_create_playlist" />
 </navigation>
