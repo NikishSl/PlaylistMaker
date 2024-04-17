@@ -143,6 +143,14 @@
     <style name="BottomNavTextStyle">
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
+    <!--List item layout text style-->
+    <style name="ListItemLayoutText">
+        <item name="android:width">@dimen/size_160</item>
+        <item name="android:height">@dimen/size_16</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_size_12</item>
+        <item name="android:textColor">?attr/colorSecondaryVariant</item>
+    </style>
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@drawable/text_input_layout_border</item>
         <item name="android:textColorHint">?attr/colorSecondaryVariant</item>

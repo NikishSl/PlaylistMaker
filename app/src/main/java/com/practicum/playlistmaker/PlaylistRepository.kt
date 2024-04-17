@@ -5,4 +5,8 @@ class PlaylistRepository(private val playlistDao: PlaylistDao) {
         playlistDao.insertOrUpdatePlaylist(playlist)
     }
 
+    suspend fun getAllPlaylists(): List<PlaylistEntity> {
+        return playlistDao.getAllPlaylists()
+    }
+
 }

@@ -20,6 +20,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -58,8 +61,10 @@ class CreatePlaylistFragment : Fragment() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 selectedImageUri = uri
-                imageCreateButton.setImageURI(uri)
-                imageCreateButton.scaleType = ImageView.ScaleType.CENTER_CROP
+                Glide.with(this)
+                    .load(uri)
+                    .transform(CenterCrop(), RoundedCorners(20))
+                    .into(imageCreateButton)
             }
         }
 
@@ -74,22 +79,17 @@ class CreatePlaylistFragment : Fragment() {
         createButton.setOnClickListener {
             val playlistName = nameEditText.text.toString()
             val playlistDescription = ""
-            val playlistCoverImageUri = selectedImageUri ?: return@setOnClickListener
+            val playlistCoverImageUri = selectedImageUri
 
             val playlist = PlaylistEntity(
                 name = playlistName,
                 description = playlistDescription,
-                coverImageFilePath = ""
+                coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: ""
             )
             viewModel.savePlaylist(playlist)
 
             val message = "Плейлист \"$playlistName\" создан"
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
-            val coverImagePath = saveImageToPrivateStorage(playlistCoverImageUri, playlistName)
-            if (coverImagePath.isNotEmpty()) {
-                playlist.coverImageFilePath = coverImagePath
-            }
 
             requireActivity().onBackPressed()
         }
@@ -144,6 +144,7 @@ class CreatePlaylistFragment : Fragment() {
     }
 
     private fun saveImageToPrivateStorage(uri: Uri, playlistName: String): String {
+        uri ?: return ""
         val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "PlaylistMaker_AlbumImages")
         if (!filePath.exists()) {
             filePath.mkdirs()

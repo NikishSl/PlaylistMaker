@@ -55,6 +55,7 @@
         android:id="@+id/editTextName"
         android:layout_marginTop="@dimen/size_32"
         android:hint="@string/name_playlist"
+        app:hintTextColor="@color/YPBlue"
         app:layout_constraintEnd_toStartOf="@+id/right_guideline_create_playlist"
         app:layout_constraintStart_toStartOf="@+id/left_guideline_create_playlist"
         app:layout_constraintTop_toBottomOf="@+id/imageCreateButton"
@@ -70,6 +71,7 @@
         style="@style/TextInputLayout"
         android:layout_marginTop="@dimen/size_16"
         android:hint="@string/overview"
+        app:hintTextColor="@color/YPBlue"
         app:layout_constraintEnd_toStartOf="@+id/right_guideline_create_playlist"
         app:layout_constraintStart_toStartOf="@+id/left_guideline_create_playlist"
         app:layout_constraintTop_toBottomOf="@+id/editTextName">
