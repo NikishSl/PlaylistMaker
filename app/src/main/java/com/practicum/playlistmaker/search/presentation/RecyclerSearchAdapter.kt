@@ -1,17 +1,18 @@
 package com.practicum.playlistmaker.search.presentation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.player.presentation.PlayerActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.Track
 import com.practicum.playlistmaker.dpToPx
@@ -60,7 +61,7 @@ class RecyclerSearchAdapter(
         holder.itemView.setOnClickListener {
             if (clickDebounce()) {
                 searchHistoryManager?.addToSearchHistory(track)
-                navigateToAudioPlayer(track)
+                navigateToAudioPlayer(track, context)
             }
         }
     }
@@ -90,10 +91,10 @@ class RecyclerSearchAdapter(
         return current
     }
 
-    private fun navigateToAudioPlayer(track: Track) {
-        val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra("track", track)
-        context.startActivity(intent)
+    private fun navigateToAudioPlayer(track: Track, context: Context) {
+        val navController = findNavController(context as Activity, R.id.container_view)
+        val bundle = bundleOf("track" to track)
+        navController.navigate(R.id.playerFragment, bundle)
     }
 
     class TrackHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

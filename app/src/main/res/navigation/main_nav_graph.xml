@@ -9,7 +9,13 @@
         android:id="@+id/searchFragment"
         android:name="com.practicum.playlistmaker.search.presentation.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search">
+
+        <action
+            android:id="@+id/action_searchFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/mediaFragment"
@@ -28,4 +34,10 @@
         android:name="com.practicum.playlistmaker.CreatePlaylistFragment"
         android:label="CreatePlaylistFragment"
         tools:layout="@layout/fragment_create_playlist" />
+
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.practicum.playlistmaker.PlayerFragment"
+        android:label="PlayerFragment"
+        tools:layout="@layout/fragment_player" />
 </navigation>
