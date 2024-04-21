@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.PlaylistEntity
+import com.practicum.playlistmaker.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.FavoritesInteractor
 import com.practicum.playlistmaker.player.domain.AudioPlayerInteractor
 import com.practicum.playlistmaker.search.data.Track
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     val audioPlayerInteractor: AudioPlayerInteractor,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     companion object {
@@ -30,12 +33,21 @@ class PlayerViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
 
+    private val _playlists = MutableLiveData<List<PlaylistEntity>>()
+    val playlists: LiveData<List<PlaylistEntity>> get() = _playlists
+
     private var trackTimeJob: Job? = null
 
     fun setTrack(track: Track) {
         _track.value = track
         audioPlayerInteractor.setDataSource(track.previewUrl)
         checkIsFavorite(track)
+    }
+
+    fun getAllPlaylists(){
+        viewModelScope.launch {
+            _playlists.value = playlistInteractor.getAllPlaylists()
+        }
     }
 
     fun playOrPause() {

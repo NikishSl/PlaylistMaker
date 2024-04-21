@@ -39,7 +39,7 @@ val appModule = module {
     single { SettingsRepository(androidApplication().getSharedPreferences("ThemePrefs", android.content.Context.MODE_PRIVATE)) }
     single { SwitchThemeUseCase(get()) }
 
-    viewModel { PlayerViewModel(get(),get()) }
+    viewModel { PlayerViewModel(get(),get(),get()) }
     single<AudioPlayerInteractor> { AudioPlayerInteractorImpl { MediaPlayer() } }
 
 
