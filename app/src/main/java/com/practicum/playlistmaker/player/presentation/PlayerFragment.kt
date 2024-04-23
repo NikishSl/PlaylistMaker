@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -18,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.practicum.playlistmaker.ListItemAdapterBS
+import com.practicum.playlistmaker.db.PlaylistTrackEntity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.dpToPx
 import com.practicum.playlistmaker.search.data.Track
@@ -55,8 +56,42 @@ class PlayerFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        bottomSheetContainer = view.findViewById(R.id.playlists_bottom_sheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+
         val recyclerViewBS = view.findViewById<RecyclerView>(R.id.playlist_recycler_view_bottom_sheet)
-        playlistAdapter = ListItemAdapterBS(emptyList())
+        playlistAdapter = ListItemAdapterBS(emptyList()) { playlist ->
+            val track = viewModel.track.value
+            track?.let {
+                val playlistTrack = PlaylistTrackEntity(
+                    trackId = it.trackId,
+                    artworkUrl100 = it.artworkUrl100 ?: "",
+                    trackName = it.trackName ?: "",
+                    artistName = it.artistName ?: "",
+                    collectionName = it.collectionName ?: "",
+                    releaseDate = it.releaseDate ?: "",
+                    primaryGenreName = it.primaryGenreName ?: "",
+                    country = it.country ?: "",
+                    trackTimeMillis = it.trackTimeMillis ?: 0,
+                    previewUrl = it.previewUrl ?: ""
+                )
+                viewModel.checkTrackInPlaylist(playlist.playlistId, playlistTrack.trackId) { isInPlaylist ->
+                    val playlistName = playlist.name
+                    if (!isInPlaylist) {
+                        viewModel.insertTrackIntoPlaylist(playlistTrack, playlist.playlistId)
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        val message = "Добавлено в плейлист $playlistName"
+                        showToast(message)
+                    } else {
+                        val message = "Трек уже добавлен в плейлист $playlistName"
+                        showToast(message)
+                    }
+                }
+            }
+        }
         recyclerViewBS.adapter = playlistAdapter
 
         val layoutManager = LinearLayoutManager(requireContext())
@@ -74,14 +109,11 @@ class PlayerFragment : Fragment() {
         playerPlayTrack = view.findViewById(R.id.player_play_track)
         playerTimePlnw = view.findViewById(R.id.player_time_plnw)
         likeButton = view.findViewById(R.id.player_like_track)
-        bottomSheetContainer = view.findViewById(R.id.playlists_bottom_sheet)
         overlay = view.findViewById(R.id.overlay)
         playerAddTrack = view.findViewById(R.id.player_add_track)
         newPlaylistBottomSheet = view.findViewById(R.id.new_playlist_bottom_sheet)
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 
@@ -182,6 +214,10 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun updatePlayPauseButton() {
         val isPlaying = viewModel.audioPlayerInteractor.isPlaying()
         val iconResource = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_track
@@ -191,6 +227,7 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.startTrackTimeUpdates()
+        viewModel.getAllPlaylists()
     }
 
     override fun onPause() {

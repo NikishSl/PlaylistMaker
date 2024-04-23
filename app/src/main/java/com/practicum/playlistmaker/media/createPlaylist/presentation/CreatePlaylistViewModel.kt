@@ -1,9 +1,11 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.media.createPlaylist.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.db.PlaylistEntity
+import com.practicum.playlistmaker.media.createPlaylist.data.PlaylistRepository
 import kotlinx.coroutines.launch
 
 class CreatePlaylistViewModel(private val playlistRepository: PlaylistRepository) : ViewModel() {

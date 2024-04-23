@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.CreatePlaylistViewModel
-import com.practicum.playlistmaker.PlaylistInteractor
-import com.practicum.playlistmaker.PlaylistRepository
+import com.practicum.playlistmaker.media.createPlaylist.presentation.CreatePlaylistViewModel
+import com.practicum.playlistmaker.media.createPlaylist.domain.PlaylistInteractor
+import com.practicum.playlistmaker.media.createPlaylist.data.PlaylistRepository
 import com.practicum.playlistmaker.media.domain.FavoritesInteractor
 import com.practicum.playlistmaker.media.data.FavoritesInteractorImpl
 import com.practicum.playlistmaker.media.data.FavoritesRepository
@@ -39,7 +39,7 @@ val appModule = module {
     single { SettingsRepository(androidApplication().getSharedPreferences("ThemePrefs", android.content.Context.MODE_PRIVATE)) }
     single { SwitchThemeUseCase(get()) }
 
-    viewModel { PlayerViewModel(get(),get(),get()) }
+    viewModel { PlayerViewModel(get(),get(),get(),get()) }
     single<AudioPlayerInteractor> { AudioPlayerInteractorImpl { MediaPlayer() } }
 
 
@@ -59,7 +59,7 @@ val appModule = module {
     single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
     viewModel { CreatePlaylistViewModel(get()) }
 
-    single { PlaylistRepository(get()) }
+    single { PlaylistRepository(get(),get()) }
     single { PlaylistInteractor(get()) }
 
 }

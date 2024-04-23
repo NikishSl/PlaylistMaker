@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.media.createPlaylist.presentation
 
 import android.app.AlertDialog
 import android.graphics.Bitmap
@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.textfield.TextInputEditText
+import com.practicum.playlistmaker.db.PlaylistEntity
+import com.practicum.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -101,9 +103,13 @@ class CreatePlaylistFragment : Fragment() {
         viewModel.isCreateButtonEnabled.observe(viewLifecycleOwner, Observer { isEnabled ->
             createButton.isEnabled = isEnabled
             if (isEnabled) {
-                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPBlue)
+                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
+                    R.color.YPBlue
+                )
             } else {
-                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPGray)
+                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
+                    R.color.YPGray
+                )
             }
         })
 

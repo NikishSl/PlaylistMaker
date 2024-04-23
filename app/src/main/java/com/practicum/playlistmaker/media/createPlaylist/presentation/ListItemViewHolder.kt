@@ -1,9 +1,10 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.media.createPlaylist.presentation
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
 
 class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val coverImage: ImageView = itemView.findViewById(R.id.cover_image)

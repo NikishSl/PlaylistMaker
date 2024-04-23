@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/createPlaylistFragment"
-        android:name="com.practicum.playlistmaker.CreatePlaylistFragment"
+        android:name="com.practicum.playlistmaker.media.createPlaylist.presentation.CreatePlaylistFragment"
         android:label="CreatePlaylistFragment"
         tools:layout="@layout/fragment_create_playlist" />
 

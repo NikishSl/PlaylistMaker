@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.db
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,5 +12,8 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlist")
     suspend fun getAllPlaylists(): List<PlaylistEntity>
+
+    @Query("SELECT * FROM playlist WHERE playlistId = :id")
+    suspend fun getPlaylistById(id: Long): PlaylistEntity?
 
 }

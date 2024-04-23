@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.ListItemAdapter
+import com.practicum.playlistmaker.media.createPlaylist.presentation.ListItemAdapter
 import com.practicum.playlistmaker.R
 
 class PlaylistFragment : Fragment() {
