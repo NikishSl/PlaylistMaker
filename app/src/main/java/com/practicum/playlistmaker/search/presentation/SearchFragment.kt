@@ -114,6 +114,8 @@ class SearchFragment : Fragment() {
             inputSearchText.setText("")
             hideKeyboard()
             updateHistoryVisibility(true)
+            noResultsFrame.visibility = View.GONE
+            connectTrouble.visibility = View.GONE
         }
 
         clearHistoryButton.setOnClickListener {
@@ -143,6 +145,16 @@ class SearchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading.collect { isLoading ->
                 progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.error.collect { error ->
+                if (error != null) {
+                    connectTrouble.visibility = View.VISIBLE
+                } else {
+                    connectTrouble.visibility = View.GONE
+                }
             }
         }
     }
