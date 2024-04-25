@@ -40,4 +40,10 @@
         android:name="com.practicum.playlistmaker.player.presentation.PlayerFragment"
         android:label="PlayerFragment"
         tools:layout="@layout/fragment_player" />
+
+    <fragment
+        android:id="@+id/playlistOpenFragment"
+        android:name="com.practicum.playlistmaker.PlaylistOpenFragment"
+        android:label="PlaylistOpenFragment"
+        tools:layout="@layout/fragment_playlist_open" />
 </navigation>

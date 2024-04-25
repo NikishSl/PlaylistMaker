@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.main.di
 
 import android.media.MediaPlayer
+import com.practicum.playlistmaker.PlaylistOpenViewModel
 import com.practicum.playlistmaker.media.createPlaylist.presentation.CreatePlaylistViewModel
 import com.practicum.playlistmaker.media.createPlaylist.domain.PlaylistInteractor
 import com.practicum.playlistmaker.media.createPlaylist.data.PlaylistRepository
@@ -52,6 +53,7 @@ val appModule = module {
     viewModel { MediaViewModel() }
     viewModel { PlaylistViewModel(get()) }
     viewModel { FavoritesViewModel(get()) }
+    viewModel { PlaylistOpenViewModel() }
 
     factory { TrackConverter() }
 

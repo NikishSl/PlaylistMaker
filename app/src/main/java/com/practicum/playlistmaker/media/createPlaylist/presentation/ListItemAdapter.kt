@@ -2,8 +2,10 @@ package com.practicum.playlistmaker.media.createPlaylist.presentation
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -35,6 +37,11 @@ class ListItemAdapter(private var playlists: List<PlaylistEntity>) :
             .transform(CenterCrop(),RoundedCorners(dpToPxView(holder.itemView, 8f)))
             .placeholder(R.drawable.ic_placeholder_med)
             .into(holder.coverImage)
+
+        holder.itemView.setOnClickListener {
+            val navController = it.findNavController()
+            navController.navigate(R.id.playlistOpenFragment)
+        }
     }
 
     override fun getItemCount(): Int {
