@@ -18,6 +18,9 @@ class SearchViewModel(private val iTunesRepository: ITunesRepository) : ViewMode
     private val _isLoading = MutableStateFlow(false)
     val isLoading: Flow<Boolean> = _isLoading.asStateFlow()
 
+    private val _error = MutableStateFlow<Throwable?>(null)
+    val error: Flow<Throwable?> = _error.asStateFlow()
+
     fun searchTracks(searchText: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -28,6 +31,7 @@ class SearchViewModel(private val iTunesRepository: ITunesRepository) : ViewMode
                         _tracks.value = tracks
                     }
             } catch (e: Exception) {
+                _error.value = e
                 _tracks.value = emptyList()
             } finally {
                 _isLoading.value = false
