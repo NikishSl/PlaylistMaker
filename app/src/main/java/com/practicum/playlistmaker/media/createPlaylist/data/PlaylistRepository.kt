@@ -20,6 +20,10 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         return playlistDao.getAllPlaylists()
     }
 
+    suspend fun getPlaylistById(id: Long): PlaylistEntity? {
+        return playlistDao.getPlaylistById(id)
+    }
+
     suspend fun insertTrackIntoPlaylist(track: PlaylistTrackEntity, playlistId: Long) {
         val playlist = playlistDao.getPlaylistById(playlistId)
         if (playlist != null) {

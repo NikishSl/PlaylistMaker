@@ -53,7 +53,7 @@ val appModule = module {
     viewModel { MediaViewModel() }
     viewModel { PlaylistViewModel(get()) }
     viewModel { FavoritesViewModel(get()) }
-    viewModel { PlaylistOpenViewModel() }
+    viewModel { PlaylistOpenViewModel(get()) }
 
     factory { TrackConverter() }
 

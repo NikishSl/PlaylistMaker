@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.media.createPlaylist.presentation
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -41,10 +42,12 @@ class CreatePlaylistFragment : Fragment() {
     private lateinit var backButton: ImageButton
     private lateinit var createButton: Button
     private lateinit var nameEditText: TextInputEditText
+    private lateinit var description: TextInputEditText
     private lateinit var imageCreateButton: ImageView
     private var hasUnsavedChanges: Boolean = false
     private var selectedImageUri: Uri? = null
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,6 +55,7 @@ class CreatePlaylistFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_create_playlist, container, false)
         createButton = view.findViewById(R.id.buttonCreate)
         nameEditText = view.findViewById(R.id.editTextNameInput)
+        description = view.findViewById(R.id.editTextDescription)
         backButton = view.findViewById(R.id.create_playlist_back_button)
         imageCreateButton = view.findViewById(R.id.imageCreateButton)
         return view
@@ -80,7 +84,7 @@ class CreatePlaylistFragment : Fragment() {
 
         createButton.setOnClickListener {
             val playlistName = nameEditText.text.toString()
-            val playlistDescription = ""
+            val playlistDescription = description.text.toString()
             val playlistCoverImageUri = selectedImageUri
 
             val playlist = PlaylistEntity(
