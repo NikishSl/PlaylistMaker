@@ -58,8 +58,9 @@ class PlaylistOpenFragment : Fragment() {
             Log.d("PlaylistFragment", "Playlist description: ${playlist?.description}")
             playlystOpenName.text = playlist?.name
             playlistOpenDescription.text = playlist?.description
-            playlistOpenQuantityTracks.text = playlist?.trackCount.toString()
-            // и т.д., обновите остальные TextView с остальными данными плейлиста
+            if (playlist != null) {
+                playlistOpenQuantityTracks.text = changeTextTrackWithNumb(playlist.trackCount)
+            }
             val file = File(playlist?.coverImageFilePath)
 
             Glide.with(requireContext())
@@ -67,6 +68,10 @@ class PlaylistOpenFragment : Fragment() {
                 .transform(CenterCrop())
                 .placeholder(R.drawable.ic_placeholder_med)
                 .into(playlistOpenImage)
+        })
+
+        viewModel.formattedDuration.observe(viewLifecycleOwner, Observer { formattedTime ->
+            playlistOpenSumTime.text = formattedTime
         })
 
         val playlistId = arguments?.getLong("playlistId") ?: -1
