@@ -54,6 +54,12 @@ class PlaylistOpenViewModel(private val playlistInteractor: PlaylistInteractor, 
         }
     }
 
+    fun deletePlaylist(playlistId: Long) {
+        viewModelScope.launch {
+            playlistInteractor.deletePlaylist(playlistId)
+        }
+    }
+
     fun sharePlaylist(activity: PlaylistOpenFragment, playlist: PlaylistEntity, tracks: List<PlaylistTrackEntity>) {
         if (tracks.isNullOrEmpty()) {
             Toast.makeText(activity.context, "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_SHORT).show()

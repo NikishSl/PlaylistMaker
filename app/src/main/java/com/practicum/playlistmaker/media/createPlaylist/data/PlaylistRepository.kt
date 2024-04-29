@@ -78,4 +78,8 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
             playlistDao.updatePlaylist(updatedPlaylist)
         }
     }
+
+    suspend fun deletePlaylist(playlistId: Long) {
+        playlistDao.deletePlaylistById(playlistId)
+    }
 }

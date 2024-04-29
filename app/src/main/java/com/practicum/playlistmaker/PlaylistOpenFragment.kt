@@ -116,6 +116,24 @@ class PlaylistOpenFragment : Fragment() {
             bottomSheetBehaviorMenuBs.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        playlistOpenDeleteBs.setOnClickListener {
+            val context = view.context
+            viewModel.playlist.value?.let { playlist ->
+                val playlistId = playlist.playlistId
+                MaterialAlertDialogBuilder(context)
+                    .setTitle("Удалить плейлист")
+                    .setMessage("Хотите удалить плейлист?")
+                    .setNegativeButton("Нет") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton("Да") { dialog, _ ->
+                        viewModel.deletePlaylist(playlistId)
+                        findNavController().popBackStack()
+                    }
+                    .show()
+            }
+        }
+
         playlistOpenShare.setOnClickListener { sharePlaylistOnClick() }
         playlistOpenShareBs.setOnClickListener { sharePlaylistOnClick() }
 

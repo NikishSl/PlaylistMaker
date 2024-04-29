@@ -19,4 +19,8 @@ class PlaylistInteractor(private val playlistRepository: PlaylistRepository) {
     suspend fun getPlaylistById(id: Long): PlaylistEntity? {
         return playlistRepository.getPlaylistById(id)
     }
+
+    suspend fun deletePlaylist(playlistId: Long) {
+        playlistRepository.deletePlaylist(playlistId)
+    }
 }
