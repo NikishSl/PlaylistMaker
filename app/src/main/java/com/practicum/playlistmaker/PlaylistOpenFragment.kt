@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -35,6 +38,18 @@ class PlaylistOpenFragment : Fragment() {
     private lateinit var playlistRecyclerOpenBS: RecyclerView
     private lateinit var playlistOpenAdapter: PlaylistOpenAdapter
 
+    private lateinit var playlistOpenShare: ImageView
+    private lateinit var playlistOpenMenu: ImageView
+
+    private lateinit var overlayPlaylistOpen: View
+    private lateinit var playlistOpenBottomSheetMenu: LinearLayout
+    private lateinit var playlistOpenImageBs: ImageView
+    private lateinit var playlistOpenNameBs: TextView
+    private lateinit var playlistOpenQuantityTracksBs: TextView
+    private lateinit var playlistOpenShareBs: TextView
+    private lateinit var playlistOpenEditBs: TextView
+    private lateinit var playlistOpenDeleteBs: TextView
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +63,22 @@ class PlaylistOpenFragment : Fragment() {
         playlistOpenQuantityTracks = view.findViewById(R.id.playlist_open_quantity_tracks)
         playlistOpenImage = view.findViewById(R.id.playlist_open_image)
         playlistRecyclerOpenBS = view.findViewById(R.id.playlist_open_recycler_bottom_sheet)
+
+        playlistOpenShare = view.findViewById(R.id.playlist_open_share)
+        playlistOpenMenu = view.findViewById(R.id.playlist_open_more)
+
+        overlayPlaylistOpen = view.findViewById(R.id.overlay_playlist_open)
+        playlistOpenBottomSheetMenu = view.findViewById(R.id.playlist_open_bottom_sheet_menu)
+        playlistOpenImageBs = view.findViewById(R.id.playlist_open_image_bs)
+        playlistOpenNameBs = view.findViewById(R.id.playlyst_open_name_bs)
+        playlistOpenQuantityTracksBs = view.findViewById(R.id.playlist_open_quantity_tracks_bs)
+        playlistOpenShareBs = view.findViewById(R.id.playlist_open_share_bs)
+        playlistOpenEditBs = view.findViewById(R.id.playlist_open_edit_bs)
+        playlistOpenDeleteBs = view.findViewById(R.id.playlist_open_delete_bs)
+
+        val bottomSheetBehaviorMenuBs = BottomSheetBehavior.from(playlistOpenBottomSheetMenu).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         playlistOpenAdapter = PlaylistOpenAdapter(emptyList(),
             onTrackClick = { track ->
@@ -64,9 +95,35 @@ class PlaylistOpenFragment : Fragment() {
                 .show()
         })
 
+        bottomSheetBehaviorMenuBs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        overlayPlaylistOpen.visibility = View.GONE
+                    }
+                    else -> {
+                        overlayPlaylistOpen.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        playlistOpenMenu.setOnClickListener {
+            bottomSheetBehaviorMenuBs.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        playlistOpenShare.setOnClickListener { sharePlaylistOnClick() }
+        playlistOpenShareBs.setOnClickListener { sharePlaylistOnClick() }
+
         playlistRecyclerOpenBS.adapter = playlistOpenAdapter
         val layoutOpenManager = LinearLayoutManager(requireContext())
         playlistRecyclerOpenBS.layoutManager = layoutOpenManager
+
+
         return view
     }
 
@@ -88,9 +145,11 @@ class PlaylistOpenFragment : Fragment() {
 
         viewModel.playlist.observe(viewLifecycleOwner, Observer { playlist ->
             playlystOpenName.text = playlist?.name
+            playlistOpenNameBs.text = playlist?.name
             playlistOpenDescription.text = playlist?.description
             if (playlist != null) {
                 playlistOpenQuantityTracks.text = changeTextTrackWithNumb(playlist.trackCount)
+                playlistOpenQuantityTracksBs.text = changeTextTrackWithNumb(playlist.trackCount)
             }
             val file = File(playlist?.coverImageFilePath)
 
@@ -99,6 +158,12 @@ class PlaylistOpenFragment : Fragment() {
                 .transform(CenterCrop())
                 .placeholder(R.drawable.ic_placeholder_med)
                 .into(playlistOpenImage)
+
+            Glide.with(requireContext())
+                .load(file)
+                .transform(CenterCrop(),RoundedCorners(dpToPx(requireContext(), 2f)))
+                .placeholder(R.drawable.ic_placeholder)
+                .into(playlistOpenImageBs)
         })
 
         viewModel.formattedDuration.observe(viewLifecycleOwner, Observer { formattedTime ->
@@ -107,6 +172,14 @@ class PlaylistOpenFragment : Fragment() {
 
         val playlistId = arguments?.getLong("playlistId") ?: -1
         viewModel.loadPlaylist(playlistId)
+    }
+
+    private fun sharePlaylistOnClick() {
+        viewModel.playlist.value?.let { playlist ->
+            viewModel.tracksOpen.value?.let { tracks ->
+                viewModel.sharePlaylist(this@PlaylistOpenFragment, playlist, tracks)
+            }
+        }
     }
 
 }

@@ -38,4 +38,8 @@
     <string name="overview">Описание</string>
     <string name="name_playlist">Название*</string>
     <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="share_bs">Поделиться</string>
+    <string name="edit_playlist_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+
 </resources>

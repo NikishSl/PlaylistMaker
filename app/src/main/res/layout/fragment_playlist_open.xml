@@ -196,15 +196,14 @@
         <TextView
             android:id="@+id/playlist_open_share_bs"
             style="@style/PlaylistOpenMenuText"
-            tools:text="Поделиться"/>
+            android:text="@string/share_bs"/>
         <TextView
             android:id="@+id/playlist_open_edit_bs"
             style="@style/PlaylistOpenMenuText"
-            tools:text="Редактировать информацию"/>
+            android:text="@string/edit_playlist_info"/>
         <TextView
             android:id="@+id/playlist_open_delete_bs"
             style="@style/PlaylistOpenMenuText"
-            tools:text="Удалить плейлист"/>
+            android:text="@string/delete_playlist"/>
     </LinearLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

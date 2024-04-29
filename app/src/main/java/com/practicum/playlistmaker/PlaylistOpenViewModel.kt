@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,5 +52,28 @@ class PlaylistOpenViewModel(private val playlistInteractor: PlaylistInteractor, 
             playlistRepository.deleteTrackFromPlaylist(playlistId, trackId)
             loadPlaylist(playlistId)
         }
+    }
+
+    fun sharePlaylist(activity: PlaylistOpenFragment, playlist: PlaylistEntity, tracks: List<PlaylistTrackEntity>) {
+        if (tracks.isNullOrEmpty()) {
+            Toast.makeText(activity.context, "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_SHORT).show()
+        } else {
+            val shareText = buildShareText(playlist, tracks)
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+            activity.startActivity(Intent.createChooser(shareIntent, "Поделитесь плейлистом"))
+        }
+    }
+
+    private fun buildShareText(playlist: PlaylistEntity, tracks: List<PlaylistTrackEntity>): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("${playlist.name}\n")
+        stringBuilder.append("${playlist.description}\n")
+        stringBuilder.append("${changeTextTrackWithNumb(tracks.size)}\n")
+        tracks.forEachIndexed { index, track ->
+            stringBuilder.append("${index + 1}. ${track.artistName} - ${track.trackName} (${timeFormat.format(track.trackTimeMillis)})\n")
+        }
+        return stringBuilder.toString().trim()
     }
 }
