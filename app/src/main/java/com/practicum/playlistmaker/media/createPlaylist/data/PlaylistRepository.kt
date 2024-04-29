@@ -68,4 +68,14 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         }
     }
 
+    suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Int) {
+        val playlist = playlistDao.getPlaylistById(playlistId)
+        playlist?.let {
+            val trackIdsList = it.trackIds.split(",").mapNotNull { idStr -> idStr.trim().toIntOrNull() }.toMutableList()
+            trackIdsList.remove(trackId)
+            val updatedTrackIds = trackIdsList.joinToString(",")
+            val updatedPlaylist = it.copy(trackIds = updatedTrackIds, trackCount = trackIdsList.size)
+            playlistDao.updatePlaylist(updatedPlaylist)
+        }
+    }
 }

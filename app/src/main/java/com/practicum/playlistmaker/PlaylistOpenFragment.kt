@@ -58,7 +58,8 @@ class PlaylistOpenFragment : Fragment() {
                 .setTitle("Подтверждение удаления")
                 .setMessage("Вы уверены, что хотите удалить трек ${track.trackName}?")
                 .setNegativeButton("Отмена", null)
-                .setPositiveButton("Удалить") { dialog, which ->
+                .setPositiveButton("Удалить") { dialog, which -> val playlistId = arguments?.getLong("playlistId") ?: -1
+                    viewModel.deleteTrackFromPlaylist(playlistId, track.trackId)
                 }
                 .show()
         })

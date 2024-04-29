@@ -44,4 +44,11 @@ class PlaylistOpenViewModel(private val playlistInteractor: PlaylistInteractor, 
             _tracksOpen.postValue(tracks)
         }
     }
+
+    fun deleteTrackFromPlaylist(playlistId: Long, trackId: Int) {
+        viewModelScope.launch {
+            playlistRepository.deleteTrackFromPlaylist(playlistId, trackId)
+            loadPlaylist(playlistId)
+        }
+    }
 }
