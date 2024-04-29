@@ -24,6 +24,7 @@
     <dimen name="size_50">50dp</dimen>
     <dimen name="size_52">52dp</dimen>
     <dimen name="size_54">54dp</dimen>
+    <dimen name="size_66">66dp</dimen>
     <dimen name="size_86">86dp</dimen>
     <dimen name="size_92">92dp</dimen>
     <dimen name="size_100">100dp</dimen>
