@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.db.PlaylistEntity
+import com.practicum.playlistmaker.db.PlaylistTrackEntity
 import com.practicum.playlistmaker.media.createPlaylist.data.PlaylistRepository
 import com.practicum.playlistmaker.media.createPlaylist.domain.PlaylistInteractor
 import kotlinx.coroutines.launch
@@ -26,6 +27,10 @@ class PlaylistOpenViewModel(private val playlistInteractor: PlaylistInteractor, 
         _backButtonClickedPL.value = Unit
     }
 
+    private val _tracksOpen = MutableLiveData<List<PlaylistTrackEntity>>()
+    val tracksOpen: LiveData<List<PlaylistTrackEntity>>
+        get() = _tracksOpen
+
     fun loadPlaylist(playlistId: Long) {
         viewModelScope.launch {
             val loadedPlaylist = playlistInteractor.getPlaylistById(playlistId)
@@ -36,6 +41,7 @@ class PlaylistOpenViewModel(private val playlistInteractor: PlaylistInteractor, 
             val totalDurationMillis = tracks.sumOf { it.trackTimeMillis }
             val formattedDuration = formatDurationMinuteWord(totalDurationMillis)
             _formattedDuration.postValue(formattedDuration)
+            _tracksOpen.postValue(tracks)
         }
     }
 }

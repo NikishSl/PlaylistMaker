@@ -123,7 +123,7 @@
             android:layout_gravity="center|top"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/playlist_open_view_bottom_sheet"
+            android:id="@+id/playlist_open_recycler_bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_24"

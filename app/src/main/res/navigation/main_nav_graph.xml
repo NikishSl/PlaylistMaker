@@ -39,11 +39,16 @@
         android:id="@+id/playerFragment"
         android:name="com.practicum.playlistmaker.player.presentation.PlayerFragment"
         android:label="PlayerFragment"
-        tools:layout="@layout/fragment_player" />
+        tools:layout="@layout/fragment_player"/>
+
 
     <fragment
         android:id="@+id/playlistOpenFragment"
         android:name="com.practicum.playlistmaker.PlaylistOpenFragment"
         android:label="PlaylistOpenFragment"
-        tools:layout="@layout/fragment_playlist_open" />
+        tools:layout="@layout/fragment_playlist_open" >
+        <action
+            android:id="@+id/action_playlistOpenFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
 </navigation>

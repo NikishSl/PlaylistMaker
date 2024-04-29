@@ -24,6 +24,10 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         return playlistDao.getPlaylistById(id)
     }
 
+    suspend fun getTrackById(trackId: Int): PlaylistTrackEntity? {
+        return playlistTrackDao.getTrackById(trackId)
+    }
+
     suspend fun getTracksForPlaylist(trackIds: List<Int>): List<PlaylistTrackEntity> {
         return playlistTrackDao.getTracksByIds(trackIds)
     }

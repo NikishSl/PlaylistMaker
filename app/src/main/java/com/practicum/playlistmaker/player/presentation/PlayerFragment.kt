@@ -45,11 +45,28 @@ class PlayerFragment : Fragment() {
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var overlay: View
 
+    private lateinit var playerTrackName: TextView
+    private lateinit var playerArtistName: TextView
+    private lateinit var playerTrackTime: TextView
+    private lateinit var playerCollectionName: TextView
+    private lateinit var playerReleaseDate: TextView
+    private lateinit var playerPrimaryGenre: TextView
+    private lateinit var playerCountry: TextView
+    private lateinit var playerArtworkImage:ImageView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_player, container, false)
+        playerTrackName = view.findViewById(R.id.player_track_name)
+        playerArtistName = view.findViewById(R.id.player_artist_name)
+        playerTrackTime = view.findViewById(R.id.player_track_time_mills)
+        playerCollectionName = view.findViewById(R.id.player_collection_name)
+        playerReleaseDate = view.findViewById(R.id.release_date)
+        playerPrimaryGenre = view.findViewById(R.id.player_primary_genre)
+        playerCountry = view.findViewById(R.id.player_country_name)
+        playerArtworkImage = view.findViewById(R.id.player_image)
 
         val backButton = view.findViewById<ImageButton>(R.id.player_back_button)
         backButton.setOnClickListener {
@@ -167,21 +184,17 @@ class PlayerFragment : Fragment() {
 
         observeViewModel()
 
+        val trackId = arguments?.getInt("trackId") ?: -1
+        if (trackId != -1) {
+            viewModel.loadPlaylistTE(trackId)
+        }
+
         viewModel.getAllPlaylists()
 
         return view
     }
 
     private fun bindTrack(track: Track) {
-        val playerTrackName = requireView().findViewById<TextView>(R.id.player_track_name)
-        val playerArtistName = requireView().findViewById<TextView>(R.id.player_artist_name)
-        val playerTrackTime = requireView().findViewById<TextView>(R.id.player_track_time_mills)
-        val playerCollectionName = requireView().findViewById<TextView>(R.id.player_collection_name)
-        val playerReleaseDate = requireView().findViewById<TextView>(R.id.release_date)
-        val playerPrimaryGenre = requireView().findViewById<TextView>(R.id.player_primary_genre)
-        val playerCountry = requireView().findViewById<TextView>(R.id.player_country_name)
-        val playerArtworkImage = requireView().findViewById<ImageView>(R.id.player_image)
-
         playerTrackName.text = track.trackName
         playerArtistName.text = track.artistName
         playerTrackTime.text = timeFormat.format(track.trackTimeMillis.toLong())

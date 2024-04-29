@@ -45,7 +45,9 @@ class PlayerViewModel(
     private val _trackAddedToPlaylistStatus = MutableLiveData<Boolean>()
     val trackAddedToPlaylistStatus: LiveData<Boolean> get() = _trackAddedToPlaylistStatus
 
-
+    private val _playlistTE = MutableLiveData<PlaylistTrackEntity?>()
+    val playlistTE: LiveData<PlaylistTrackEntity?>
+        get() = _playlistTE
 
     private var trackTimeJob: Job? = null
 
@@ -121,5 +123,32 @@ class PlayerViewModel(
         super.onCleared()
         audioPlayerInteractor.release()
         trackTimeJob?.cancel()
+    }
+
+    fun loadPlaylistTE(trackId: Int) {
+        viewModelScope.launch {
+            val loadedTrack = playlistRepository.getTrackById(trackId)
+            _playlistTE.postValue(loadedTrack)
+
+            loadedTrack?.let {
+                val track = convertToTrack(it)
+                _track.postValue(track)
+            }
+        }
+    }
+
+    private fun convertToTrack(playlistTrackEntity: PlaylistTrackEntity): Track {
+        return Track(
+            playlistTrackEntity.trackName,
+            playlistTrackEntity.artistName,
+            playlistTrackEntity.trackTimeMillis,
+            playlistTrackEntity.artworkUrl100,
+            playlistTrackEntity.trackId,
+            playlistTrackEntity.collectionName,
+            playlistTrackEntity.releaseDate,
+            playlistTrackEntity.primaryGenreName,
+            playlistTrackEntity.country,
+            playlistTrackEntity.previewUrl
+        )
     }
 }
