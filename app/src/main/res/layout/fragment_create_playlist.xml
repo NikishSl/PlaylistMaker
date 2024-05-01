@@ -29,6 +29,7 @@
         style="@style/BackArrowButton" />
 
     <TextView
+        android:id="@+id/create_playlist_title"
         style="@style/TitleNew"
         android:layout_marginStart="56dp"
         android:text="@string/new_playlist"

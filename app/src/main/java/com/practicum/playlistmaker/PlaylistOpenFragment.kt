@@ -137,6 +137,14 @@ class PlaylistOpenFragment : Fragment() {
         playlistOpenShare.setOnClickListener { sharePlaylistOnClick() }
         playlistOpenShareBs.setOnClickListener { sharePlaylistOnClick() }
 
+        playlistOpenEditBs.setOnClickListener {
+            val playlistToEdit = viewModel.playlist.value
+            val navController = findNavController()
+            navController.navigate(R.id.createPlaylistFragment, Bundle().apply {
+                putParcelable("playlist", playlistToEdit)
+            })
+        }
+
         playlistRecyclerOpenBS.adapter = playlistOpenAdapter
         val layoutOpenManager = LinearLayoutManager(requireContext())
         playlistRecyclerOpenBS.layoutManager = layoutOpenManager

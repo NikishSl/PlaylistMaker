@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +36,13 @@ import java.io.FileOutputStream
 class CreatePlaylistFragment : Fragment() {
 
     companion object {
-        fun newInstance() = CreatePlaylistFragment()
+        fun newInstance(playlistToEdit: PlaylistEntity? = null): CreatePlaylistFragment {
+            val fragment = CreatePlaylistFragment()
+            val args = Bundle()
+            args.putParcelable("playlist", playlistToEdit)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     private val viewModel: CreatePlaylistViewModel by viewModel()
@@ -44,6 +51,7 @@ class CreatePlaylistFragment : Fragment() {
     private lateinit var nameEditText: TextInputEditText
     private lateinit var description: TextInputEditText
     private lateinit var imageCreateButton: ImageView
+    private lateinit var createPlaylistTitle: TextView
     private var hasUnsavedChanges: Boolean = false
     private var selectedImageUri: Uri? = null
 
@@ -57,6 +65,7 @@ class CreatePlaylistFragment : Fragment() {
         nameEditText = view.findViewById(R.id.editTextNameInput)
         description = view.findViewById(R.id.editTextDescription)
         backButton = view.findViewById(R.id.create_playlist_back_button)
+        createPlaylistTitle = view.findViewById(R.id.create_playlist_title)
         imageCreateButton = view.findViewById(R.id.imageCreateButton)
         return view
     }
@@ -74,11 +83,30 @@ class CreatePlaylistFragment : Fragment() {
             }
         }
 
+        val playlistToEdit: PlaylistEntity? = arguments?.getParcelable("playlist")
+
+        if (playlistToEdit != null) {
+            nameEditText.setText(playlistToEdit.name)
+            description.setText(playlistToEdit.description)
+            if (playlistToEdit.coverImageFilePath.isNotEmpty()) {
+                Glide.with(this)
+                    .load(File(playlistToEdit.coverImageFilePath))
+                    .transform(CenterCrop(), RoundedCorners(20))
+                    .into(imageCreateButton)
+            }
+            createButton.text = getString(R.string.save)
+            createPlaylistTitle.text = getString(R.string.edit)
+        }
+
         backButton.setOnClickListener {
-            if (hasUnsavedChanges) {
-                showConfirmationDialog()
-            } else {
+            if (playlistToEdit != null) {
                 requireActivity().onBackPressed()
+            } else {
+                if (hasUnsavedChanges) {
+                    showConfirmationDialog()
+                } else {
+                    requireActivity().onBackPressed()
+                }
             }
         }
 
@@ -87,16 +115,25 @@ class CreatePlaylistFragment : Fragment() {
             val playlistDescription = description.text.toString()
             val playlistCoverImageUri = selectedImageUri
 
-            val playlist = PlaylistEntity(
-                name = playlistName,
-                description = playlistDescription,
-                coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: ""
-            )
-            viewModel.savePlaylist(playlist)
-
-            val message = "Плейлист \"$playlistName\" создан"
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
+            if (playlistToEdit != null) {
+                val updatedPlaylist = playlistToEdit.copy(
+                    name = playlistName,
+                    description = playlistDescription,
+                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: playlistToEdit.coverImageFilePath
+                )
+                viewModel.updatePlaylist(updatedPlaylist)
+                val message = "Плейлист \"$playlistName\" обновлен"
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            } else {
+                val newPlaylist = PlaylistEntity(
+                    name = playlistName,
+                    description = playlistDescription,
+                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: ""
+                )
+                viewModel.savePlaylist(newPlaylist)
+                val message = "Плейлист \"$playlistName\" создан"
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
             requireActivity().onBackPressed()
         }
 
@@ -105,15 +142,16 @@ class CreatePlaylistFragment : Fragment() {
         })
 
         viewModel.isCreateButtonEnabled.observe(viewLifecycleOwner, Observer { isEnabled ->
-            createButton.isEnabled = isEnabled
-            if (isEnabled) {
-                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-                    R.color.YPBlue
-                )
+            if (playlistToEdit != null) {
+                createButton.isEnabled = true
+                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPBlue)
             } else {
-                createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(),
-                    R.color.YPGray
-                )
+                createButton.isEnabled = isEnabled
+                if (isEnabled) {
+                    createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPBlue)
+                } else {
+                    createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPGray)
+                }
             }
         })
 
@@ -123,6 +161,10 @@ class CreatePlaylistFragment : Fragment() {
                 val isNameEmpty = s.isNullOrEmpty()
                 viewModel.updateCreateButtonState(!isNameEmpty)
                 hasUnsavedChanges = true
+                if (playlistToEdit != null && isNameEmpty) {
+                    createButton.isEnabled = false
+                    createButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.YPGray)
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

@@ -24,6 +24,10 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         return playlistDao.getPlaylistById(id)
     }
 
+    suspend fun updatePlaylist(playlist: PlaylistEntity) {
+        playlistDao.updatePlaylist(playlist)
+    }
+
     suspend fun getTrackById(trackId: Int): PlaylistTrackEntity? {
         return playlistTrackDao.getTrackById(trackId)
     }

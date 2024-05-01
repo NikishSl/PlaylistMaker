@@ -160,7 +160,9 @@ class PlayerFragment : Fragment() {
 
         newPlaylistBottomSheet.setOnClickListener {
             val navController = findNavController()
-            navController.navigate(R.id.createPlaylistFragment)
+            navController.navigate(R.id.createPlaylistFragment, Bundle().apply {
+                putParcelable("playlist", null)
+            })
         }
 
         likeButton.setOnClickListener {
