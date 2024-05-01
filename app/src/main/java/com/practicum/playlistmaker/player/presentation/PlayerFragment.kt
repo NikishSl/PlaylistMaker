@@ -121,7 +121,13 @@ class PlayerFragment : Fragment() {
         }
 
         val track = arguments?.getParcelable<Track>(TRACK_KEY)
-        track?.let { viewModel.setTrack(it) }
+        val trackId = arguments?.getInt("trackId") ?: -1
+
+        if (track != null) {
+            viewModel.setTrack(track)
+        } else if (trackId != -1) {
+            viewModel.loadPlaylistTE(trackId)
+        }
 
         playerPlayTrack = view.findViewById(R.id.player_play_track)
         playerTimePlnw = view.findViewById(R.id.player_time_plnw)
@@ -185,11 +191,6 @@ class PlayerFragment : Fragment() {
         })
 
         observeViewModel()
-
-        val trackId = arguments?.getInt("trackId") ?: -1
-        if (trackId != -1) {
-            viewModel.loadPlaylistTE(trackId)
-        }
 
         viewModel.getAllPlaylists()
 

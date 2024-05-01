@@ -131,13 +131,21 @@ class PlayerViewModel(
             _playlistTE.postValue(loadedTrack)
 
             loadedTrack?.let {
-                val track = convertToTrack(it)
-                _track.postValue(track)
+                if (!it.previewUrl.isNullOrEmpty()){
+                    val favoriteTracks = favoritesInteractor.getAllFavoriteTracks().firstOrNull()
+                    val isFavorite = favoriteTracks?.any { it.trackId == loadedTrack.trackId } ?: false
+                    val track = convertToTrack(loadedTrack, isFavorite)
+                    _track.postValue(track)
+                    _isFavorite.postValue(isFavorite)
+
+                    audioPlayerInteractor.setDataSource(it.previewUrl)
+                    setTrack(track)
+                }
             }
         }
     }
 
-    private fun convertToTrack(playlistTrackEntity: PlaylistTrackEntity): Track {
+    private fun convertToTrack(playlistTrackEntity: PlaylistTrackEntity, isFavorite: Boolean): Track {
         return Track(
             playlistTrackEntity.trackName,
             playlistTrackEntity.artistName,
@@ -148,7 +156,8 @@ class PlayerViewModel(
             playlistTrackEntity.releaseDate,
             playlistTrackEntity.primaryGenreName,
             playlistTrackEntity.country,
-            playlistTrackEntity.previewUrl
+            playlistTrackEntity.previewUrl,
+            isFavorite
         )
     }
 }
