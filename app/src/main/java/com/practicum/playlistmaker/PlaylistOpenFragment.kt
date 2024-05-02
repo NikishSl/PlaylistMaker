@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +20,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -50,6 +51,8 @@ class PlaylistOpenFragment : Fragment() {
     private lateinit var playlistOpenEditBs: TextView
     private lateinit var playlistOpenDeleteBs: TextView
 
+    private lateinit var playlistOpenEmptyList: TextView
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,6 +79,8 @@ class PlaylistOpenFragment : Fragment() {
         playlistOpenEditBs = view.findViewById(R.id.playlist_open_edit_bs)
         playlistOpenDeleteBs = view.findViewById(R.id.playlist_open_delete_bs)
 
+        playlistOpenEmptyList = view.findViewById(R.id.playlist_open_empty_list)
+
         val bottomSheetBehaviorMenuBs = BottomSheetBehavior.from(playlistOpenBottomSheetMenu).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -85,14 +90,16 @@ class PlaylistOpenFragment : Fragment() {
                 playlistOpenAdapter.navigateToPlaylistOpenFragment(track, findNavController())
             },
             onTrackLongClickListener = { track ->
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Подтверждение удаления")
+            val dialogOpenFr = AlertDialog.Builder(requireContext())
+                .setTitle("Удалить трек")
                 .setMessage("Вы уверены, что хотите удалить трек ${track.trackName}?")
-                .setNegativeButton("Отмена", null)
-                .setPositiveButton("Удалить") { dialog, which -> val playlistId = arguments?.getLong("playlistId") ?: -1
+                .setNegativeButton("Нет", null)
+                .setPositiveButton("Да") { dialog, which -> val playlistId = arguments?.getLong("playlistId") ?: -1
                     viewModel.deleteTrackFromPlaylist(playlistId, track.trackId)
                 }
-                .show()
+                val dialog = dialogOpenFr.show()
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
         })
 
         bottomSheetBehaviorMenuBs.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -120,7 +127,7 @@ class PlaylistOpenFragment : Fragment() {
             val context = view.context
             viewModel.playlist.value?.let { playlist ->
                 val playlistId = playlist.playlistId
-                MaterialAlertDialogBuilder(context)
+                AlertDialog.Builder(context)
                     .setTitle("Удалить плейлист")
                     .setMessage("Хотите удалить плейлист?")
                     .setNegativeButton("Нет") { dialog, _ ->
@@ -131,6 +138,10 @@ class PlaylistOpenFragment : Fragment() {
                         findNavController().popBackStack()
                     }
                     .show()
+                    .apply {
+                        getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
+                        getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
+                    }
             }
         }
 
@@ -196,6 +207,15 @@ class PlaylistOpenFragment : Fragment() {
             playlistOpenSumTime.text = formattedTime
         })
 
+        viewModel.tracksOpen.observe(viewLifecycleOwner, Observer { tracksOpen ->
+            if (tracksOpen.isEmpty()) {
+                toggleEmptyListVisibility(true)
+            } else {
+                toggleEmptyListVisibility(false)
+                playlistOpenAdapter.updatePlaylists(tracksOpen)
+            }
+        })
+
         val playlistId = arguments?.getLong("playlistId") ?: -1
         viewModel.loadPlaylist(playlistId)
     }
@@ -205,6 +225,16 @@ class PlaylistOpenFragment : Fragment() {
             viewModel.tracksOpen.value?.let { tracks ->
                 viewModel.sharePlaylist(this@PlaylistOpenFragment, playlist, tracks)
             }
+        }
+    }
+
+    private fun toggleEmptyListVisibility(isEmpty: Boolean) {
+        if (isEmpty) {
+            playlistOpenEmptyList.visibility = View.VISIBLE
+            playlistRecyclerOpenBS.visibility = View.GONE
+        } else {
+            playlistOpenEmptyList.visibility = View.GONE
+            playlistRecyclerOpenBS.visibility = View.VISIBLE
         }
     }
 

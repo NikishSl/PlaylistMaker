@@ -31,6 +31,9 @@ import com.practicum.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class CreatePlaylistFragment : Fragment() {
@@ -115,31 +118,8 @@ class CreatePlaylistFragment : Fragment() {
             val playlistDescription = description.text.toString()
             val playlistCoverImageUri = selectedImageUri
 
-            if (playlistToEdit != null) {
-                val updatedPlaylist = playlistToEdit.copy(
-                    name = playlistName,
-                    description = playlistDescription,
-                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: playlistToEdit.coverImageFilePath
-                )
-                viewModel.updatePlaylist(updatedPlaylist)
-                val message = "Плейлист \"$playlistName\" обновлен"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            } else {
-                val newPlaylist = PlaylistEntity(
-                    name = playlistName,
-                    description = playlistDescription,
-                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: ""
-                )
-                viewModel.savePlaylist(newPlaylist)
-                val message = "Плейлист \"$playlistName\" создан"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-            requireActivity().onBackPressed()
+            updatePlaylistIfChanged(playlistToEdit, playlistName, playlistDescription, playlistCoverImageUri)
         }
-
-        viewModel.backButtonClicked.observe(viewLifecycleOwner, Observer {
-            requireActivity().onBackPressed()
-        })
 
         viewModel.isCreateButtonEnabled.observe(viewLifecycleOwner, Observer { isEnabled ->
             if (playlistToEdit != null) {
@@ -192,7 +172,9 @@ class CreatePlaylistFragment : Fragment() {
                 dialog.dismiss()
             }
             .create()
-            .show()
+            val dialog =builder.show()
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.YPBlue))
     }
 
     private fun saveImageToPrivateStorage(uri: Uri, playlistName: String): String {
@@ -202,10 +184,41 @@ class CreatePlaylistFragment : Fragment() {
             filePath.mkdirs()
         }
         val imageName = "${playlistName.replace("\\s+".toRegex(), "")}_cover.jpg"
-        val file = File(filePath, imageName)
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val uniqueImageName = "${playlistName.replace("\\s+".toRegex(), "")}_cover_$timeStamp.jpg"
+
+        val file = File(filePath, uniqueImageName)
         val inputStream = requireContext().contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
         BitmapFactory.decodeStream(inputStream).compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
         return file.absolutePath
+    }
+
+    private fun updatePlaylistIfChanged(playlistToEdit: PlaylistEntity?, playlistName: String, playlistDescription: String, playlistCoverImageUri: Uri?) {
+        if (playlistToEdit == null || playlistName != playlistToEdit.name || playlistDescription != playlistToEdit.description || playlistCoverImageUri != null) {
+            val updatedPlaylist = if (playlistToEdit != null) {
+                playlistToEdit.copy(
+                    name = playlistName,
+                    description = playlistDescription,
+                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: playlistToEdit.coverImageFilePath
+                )
+            } else {
+                PlaylistEntity(
+                    name = playlistName,
+                    description = playlistDescription,
+                    coverImageFilePath = playlistCoverImageUri?.let { saveImageToPrivateStorage(it, playlistName) } ?: ""
+                )
+            }
+            viewModel.savePlaylist(updatedPlaylist)
+            val message = if (playlistToEdit != null) {
+                "Плейлист \"$playlistName\" обновлен"
+            } else {
+                "Плейлист \"$playlistName\" создан"
+            }
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            requireActivity().onBackPressed()
+        } else {
+            requireActivity().onBackPressed()
+        }
     }
 }

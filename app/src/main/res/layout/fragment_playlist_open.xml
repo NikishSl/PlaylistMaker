@@ -122,6 +122,17 @@
             android:scaleType="centerCrop"
             android:layout_gravity="center|top"/>
 
+        <TextView
+            android:id="@+id/playlist_open_empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/size_24"
+            android:text="@string/empty_list"
+            android:textSize="@dimen/text_size_16"
+            android:textColor="?attr/colorSecondaryVariant"
+            android:fontFamily="@font/ys_display_regular"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlist_open_recycler_bottom_sheet"
             android:layout_width="match_parent"
