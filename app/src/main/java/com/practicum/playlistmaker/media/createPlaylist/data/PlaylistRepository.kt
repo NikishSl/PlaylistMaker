@@ -20,6 +20,22 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         return playlistDao.getAllPlaylists()
     }
 
+    suspend fun getPlaylistById(id: Long): PlaylistEntity? {
+        return playlistDao.getPlaylistById(id)
+    }
+
+    suspend fun updatePlaylist(playlist: PlaylistEntity) {
+        playlistDao.updatePlaylist(playlist)
+    }
+
+    suspend fun getTrackById(trackId: Int): PlaylistTrackEntity? {
+        return playlistTrackDao.getTrackById(trackId)
+    }
+
+    suspend fun getTracksForPlaylist(trackIds: List<Int>): List<PlaylistTrackEntity> {
+        return playlistTrackDao.getTracksByIds(trackIds)
+    }
+
     suspend fun insertTrackIntoPlaylist(track: PlaylistTrackEntity, playlistId: Long) {
         val playlist = playlistDao.getPlaylistById(playlistId)
         if (playlist != null) {
@@ -56,4 +72,18 @@ class PlaylistRepository(private val playlistDao: PlaylistDao, private val playl
         }
     }
 
+    suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Int) {
+        val playlist = playlistDao.getPlaylistById(playlistId)
+        playlist?.let {
+            val trackIdsList = it.trackIds.split(",").mapNotNull { idStr -> idStr.trim().toIntOrNull() }.toMutableList()
+            trackIdsList.remove(trackId)
+            val updatedTrackIds = trackIdsList.joinToString(",")
+            val updatedPlaylist = it.copy(trackIds = updatedTrackIds, trackCount = trackIdsList.size)
+            playlistDao.updatePlaylist(updatedPlaylist)
+        }
+    }
+
+    suspend fun deletePlaylist(playlistId: Long) {
+        playlistDao.deletePlaylistById(playlistId)
+    }
 }

@@ -34,4 +34,10 @@ class CreatePlaylistViewModel(private val playlistRepository: PlaylistRepository
             playlistRepository.insertOrUpdatePlaylist(playlist)
         }
     }
+
+    fun updatePlaylist(playlist: PlaylistEntity) {
+        viewModelScope.launch {
+            playlistRepository.updatePlaylist(playlist)
+        }
+    }
 }

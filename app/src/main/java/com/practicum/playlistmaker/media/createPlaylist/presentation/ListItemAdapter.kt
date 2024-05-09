@@ -2,8 +2,10 @@ package com.practicum.playlistmaker.media.createPlaylist.presentation
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -14,7 +16,8 @@ import com.practicum.playlistmaker.db.PlaylistEntity
 import com.practicum.playlistmaker.dpToPxView
 import java.io.File
 
-class ListItemAdapter(private var playlists: List<PlaylistEntity>) :
+class ListItemAdapter(private var playlists: List<PlaylistEntity>,
+                      private val onItemClick: (Long) -> Unit) :
     RecyclerView.Adapter<ListItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
@@ -35,6 +38,17 @@ class ListItemAdapter(private var playlists: List<PlaylistEntity>) :
             .transform(CenterCrop(),RoundedCorners(dpToPxView(holder.itemView, 8f)))
             .placeholder(R.drawable.ic_placeholder_med)
             .into(holder.coverImage)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(playlist.playlistId)
+        }
+    }
+
+    fun navigateToPlaylistOpenFragment(playlistId: Long, navController: NavController) {
+        val bundle = Bundle().apply {
+            putLong("playlistId", playlistId)
+        }
+        navController.navigate(R.id.playlistOpenFragment, bundle)
     }
 
     override fun getItemCount(): Int {

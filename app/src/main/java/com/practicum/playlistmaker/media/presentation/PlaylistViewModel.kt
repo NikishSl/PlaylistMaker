@@ -14,7 +14,8 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
 
     fun loadPlaylists() {
         viewModelScope.launch {
-            _playlists.value = playlistInteractor.getAllPlaylists()
+            val playlists = playlistInteractor.getAllPlaylists()
+            _playlists.postValue(playlists)
         }
     }
 }

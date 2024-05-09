@@ -158,4 +158,30 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    <!--Playlist open layout small text style-->
+    <style name="PlaylistOpenSmallText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/size_20</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:textColor">@color/YPblack</item>
+    </style>
+    <!--Playlist open layout large text style-->
+    <style name="PlaylistOpenLargeText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/size_28</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_size_24</item>
+        <item name="android:textColor">@color/YPblack</item>
+    </style>
+    <!--Playlist open layout menu text style-->
+    <style name="PlaylistOpenMenuText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/size_66</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:paddingHorizontal">@dimen/size_16</item>
+        <item name="android:textColor">?attr/colorSecondaryVariant</item>
+    </style>
 </resources>

@@ -34,11 +34,15 @@ class PlaylistFragment : Fragment() {
         val newPlaylistButton = view.findViewById<Button>(R.id.new_playlist)
         newPlaylistButton.setOnClickListener {
             val navController = findNavController()
-            navController.navigate(R.id.createPlaylistFragment)
+            navController.navigate(R.id.createPlaylistFragment, Bundle().apply {
+                putParcelable("playlist", null)
+            })
         }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.playlist_recycler_view)
-        playlistAdapter = ListItemAdapter(emptyList())
+        playlistAdapter = ListItemAdapter(emptyList()) { playlistId ->
+            playlistAdapter.navigateToPlaylistOpenFragment(playlistId, findNavController())
+        }
         recyclerView.adapter = playlistAdapter
 
         val layoutManager = GridLayoutManager(requireContext(), 2)
